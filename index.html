@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Team Project Tracker&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-family: Arial, sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>max-width: 600px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 40px auto;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 0 20px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: #f9f9f9;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: #333;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>h1 {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 25px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.input-group {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>input {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex: 1;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid #ccc;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>button {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 12px 18px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: #3ecf8e;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: white;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: bold;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>button:hover {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: #34b27b;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>ul {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>list-style: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 0;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>li {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: white;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 12px 15px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: 0 1px 3px rgba(0,0,0,0.1);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.delete-btn {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: #ff4d4d;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: white;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 6px 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 3px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.delete-btn:hover {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: #cc0000;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;h1&gt;Team Project Tracker&lt;/h1&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="input-group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;input type="text" id="taskInput" placeholder="Enter a new project task..." /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button id="addBtn"&gt;Add Task&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;ul id="taskList"&gt;&lt;/ul&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script type="module"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Configured with your Supabase credentials</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const SUPABASE_URL = 'https://lxwdxvbjnconirvhcvsq.supabase.co';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4d2R4dmJqbmNvbmlydmhjdnNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyNjEyMzksImV4cCI6MjEwNTgzNzIzOX0.SfkReq2x4IQjc62tNJJ81698UBJnTPzY1rqA_DF5nmQ';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Fetch and render tasks from Supabase</p>
+<p class="p1"><span class="Apple-converted-space">    </span>async function fetchTasks() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const { data, error } = await supabase</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.from('tasks')</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.select('*')</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.order('created_at', { ascending: true });</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (error) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>console.error('Error fetching tasks:', error);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>renderTasks(data);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function renderTasks(tasks) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const taskList = document.getElementById('taskList');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>taskList.innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>tasks.forEach((task) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const li = document.createElement('li');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>li.textContent = task.name;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const deleteBtn = document.createElement('button');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>deleteBtn.textContent = 'Delete';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>deleteBtn.className = 'delete-btn';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>deleteBtn.onclick = () =&gt; deleteTask(task.id);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>li.appendChild(deleteBtn);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>taskList.appendChild(li);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Subscribe to real-time changes so everyone sees live updates</p>
+<p class="p1"><span class="Apple-converted-space">    </span>supabase</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.channel('schema-db-changes')</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.on(</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'postgres_changes',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{ event: '*', schema: 'public', table: 'tasks' },</p>
+<p class="p1"><span class="Apple-converted-space">        </span>() =&gt; fetchTasks()</p>
+<p class="p1"><span class="Apple-converted-space">      </span>)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.subscribe();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Add task</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('addBtn').addEventListener('click', async () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const input = document.getElementById('taskInput');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (input.value.trim() !== '') {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const { error } = await supabase.from('tasks').insert([{ name: input.value }]);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (error) console.error('Error adding task:', error);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>input.value = '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Delete task</p>
+<p class="p1"><span class="Apple-converted-space">    </span>async function deleteTask(id) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const { error } = await supabase.from('tasks').delete().eq('id', id);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (error) console.error('Error deleting task:', error);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Load tasks on startup</p>
+<p class="p1"><span class="Apple-converted-space">    </span>fetchTasks();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
