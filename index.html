@@ -1,102 +1,2380 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Team Project Tracker</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 0 20px;
-      background-color: #f9f9f9;
-      color: #333;
-    }
-    h1 { text-align: center; margin-bottom: 25px; }
-    .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-    input { flex: 1; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; }
-    button { padding: 12px 18px; font-size: 16px; cursor: pointer; background-color: #3ecf8e; color: white; border: none; border-radius: 4px; font-weight: bold; }
-    button:hover { background-color: #34b27b; }
-    ul { list-style: none; padding: 0; }
-    li { background: white; margin-bottom: 10px; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .delete-btn { background: #ff4d4d; color: white; border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer; font-size: 14px; }
-    .delete-btn:hover { background: #cc0000; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medallia Presales Projects</title>
+    <!-- Inter Font Import -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #F8FAFC;        /* Frost / Soft Light Background */
+            --card-bg: #FFFFFF;        /* Elevated Card Surface */
+            --topbar-bg: #0D0F10;      /* Dark Top Bar per Medallia Brand */
+            --slate-950: #0D0F10;
+            --slate-900: #1A1C1E;
+            --slate-800: #32363A;
+            --slate-600: #555D65;
+            --slate-500: #64748B;
+            --slate-400: #7F8991;
+            --slate-200: #E2E8F0;      /* Subtle Light Borders */
+            --text-primary: #0F172A;   /* Primary Typography for Light BG */
+            --text-secondary: #64748B;
+            --flash-400: #C8FF00;     /* Medallia Flash Lime Accent */
+            --flash-500: #AEE600;
+            --border-color: #E2E8F0;
+            --indigo-500: #5B5BFF;
+            --indigo-accent: #2563EB;
+
+            /* Priority Color Tokens */
+            --p1-green-bg: #ECFDF5;
+            --p1-green-border: #A7F3D0;
+            --p1-green-text: #047857;
+
+            --p2-yellow-bg: #FEFCE8;
+            --p2-yellow-border: #FEF08A;
+            --p2-yellow-text: #A16207;
+
+            --p3-orange-bg: #FFEDD5;
+            --p3-orange-border: #FDBA74;
+            --p3-orange-text: #C2410C;
+
+            --p4-red-bg: #FEF2F2;
+            --p4-red-border: #FECACA;
+            --p4-red-text: #B91C1C;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .top-bar {
+            height: 64px;
+            background-color: var(--topbar-bg);
+            border-bottom: 1px solid var(--slate-800);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 20;
+            position: relative;
+        }
+
+        .top-bar .brand-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-toggle-sidebar {
+            background: none;
+            border: 1px solid var(--slate-800);
+            color: #FFFFFF;
+            border-radius: 6px;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-toggle-sidebar:hover, .btn-toggle-sidebar.active {
+            background-color: var(--slate-800);
+            border-color: var(--flash-400);
+            color: var(--flash-400);
+        }
+
+        .brand-logo-img {
+            height: 22px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        .top-bar .divider {
+            color: var(--slate-600);
+            font-weight: 300;
+        }
+
+        .top-bar h1 {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--slate-400);
+            letter-spacing: -0.02em;
+        }
+
+        .app-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 64px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-drawer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 340px;
+            height: 100%;
+            background-color: #FFFFFF;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px;
+            z-index: 50;
+            overflow-y: auto;
+            transform: translateX(-100%);
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .sidebar-drawer.open {
+            transform: translateX(0);
+        }
+
+        .drawer-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(2px);
+            z-index: 40;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .drawer-backdrop.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+
+        .sidebar-section-label {
+            color: var(--indigo-accent);
+            background-color: #EFF6FF;
+            border: 1px solid #DBEAFE;
+            border-left: 3px solid var(--indigo-accent);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            color: var(--slate-500);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+            gap: 12px;
+        }
+
+        .nav-item:hover {
+            background-color: #F1F5F9;
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background-color: #F1F5F9;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 15%;
+            height: 70%;
+            width: 4px;
+            background-color: var(--indigo-accent);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .icon-badge {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--flash-400);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .icon-badge svg {
+            width: 16px;
+            height: 16px;
+            fill: #0D0F10;
+        }
+
+        .content-area {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-main);
+            overflow-y: auto;
+        }
+
+        .content-header {
+            padding: 24px 40px;
+            background-color: #FFFFFF;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+        }
+
+        .btn-flash {
+            background-color: var(--flash-400);
+            color: var(--slate-950);
+            border: 1px solid #B0E600;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-flash:hover {
+            background-color: var(--flash-500);
+        }
+
+        .workspace-body {
+            padding: 32px 40px;
+            flex: 1;
+        }
+
+        .dashboard-section {
+            margin-bottom: 32px;
+        }
+
+        .dashboard-section-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dashboard-section-title::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--indigo-accent);
+        }
+
+        .welcome-banner-compact {
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+
+        .welcome-banner-compact p {
+            font-size: 14px;
+            color: var(--text-primary);
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .welcome-banner-compact p strong {
+            color: var(--indigo-accent);
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .kpi-card {
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .kpi-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .kpi-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+            line-height: 1;
+        }
+
+        .kpi-card.accent-open .kpi-value { color: var(--indigo-accent); }
+        .kpi-card.accent-completed .kpi-value { color: var(--p1-green-text); }
+        .kpi-card.accent-quarter .kpi-value { color: #D97706; }
+        .kpi-card.accent-blockers .kpi-value { color: var(--danger-red); }
+
+        .guidance-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 24px;
+        }
+
+        .howto-card {
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .howto-step-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .howto-step {
+            display: flex;
+            gap: 12px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .step-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--flash-400);
+            color: #0D0F10;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .matrix-wrapper {
+            margin-top: 0;
+        }
+
+        .eisenhower-container {
+            display: grid;
+            grid-template-columns: 36px 1fr 1fr;
+            grid-template-rows: 32px 1fr 1fr;
+            gap: 10px;
+        }
+
+        .axis-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+
+        .axis-label.y-axis {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+        }
+
+        .quadrant-card {
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            min-height: 130px;
+            border: 1px solid var(--border-color);
+            background-color: #FFFFFF;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        }
+
+        .quadrant-card h4 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 2px;
+            color: var(--text-primary);
+        }
+
+        .quadrant-card .level-subtitle {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 6px;
+        }
+
+        .quadrant-card p {
+            font-size: 12px;
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+
+        .quad-p1 { border-top: 3px solid var(--p1-green-text); background-color: var(--p1-green-bg); }
+        .quad-p1 .level-subtitle { color: var(--p1-green-text); }
+
+        .quad-p2 { border-top: 3px solid var(--p2-yellow-text); background-color: var(--p2-yellow-bg); }
+        .quad-p2 .level-subtitle { color: var(--p2-yellow-text); }
+
+        .quad-p3 { border-top: 3px solid var(--p3-orange-text); background-color: var(--p3-orange-bg); }
+        .quad-p3 .level-subtitle { color: var(--p3-orange-text); }
+
+        .quad-p4 { border-top: 3px solid var(--p4-red-text); background-color: var(--p4-red-bg); }
+        .quad-p4 .level-subtitle { color: var(--p4-red-text); }
+
+        .dashboard-lower-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .home-table-card {
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .home-table-card.card-tall {
+            min-height: 260px;
+        }
+
+        .section-card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .table-mini {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-mini th {
+            background-color: #F8FAFC;
+            padding: 10px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table-mini td {
+            padding: 12px;
+            font-size: 13px;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table-mini tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge-count {
+            display: inline-block;
+            background-color: #EFF6FF;
+            color: var(--indigo-accent);
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .blocker-text-highlight {
+            color: var(--danger-red);
+            font-weight: 500;
+        }
+
+        .updates-completed-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .update-time-tag {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .update-detail-badge {
+            display: inline-block;
+            background-color: #F1F5F9;
+            color: var(--indigo-accent);
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .kanban-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .kanban-column {
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 16px;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        }
+
+        .kanban-col-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .col-not-started { border-bottom-color: var(--slate-400); }
+        .col-in-progress { border-bottom-color: var(--indigo-accent); }
+        .col-on-hold { border-bottom-color: #F59E0B; }
+        .col-completed { border-bottom-color: var(--p1-green-text); }
+        .col-blocked { border-bottom-color: var(--danger-red); }
+
+        .kanban-col-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-primary);
+        }
+
+        .kanban-col-count {
+            font-size: 11px;
+            font-weight: 700;
+            background-color: #F1F5F9;
+            color: var(--text-secondary);
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        .kanban-cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .kanban-card {
+            background-color: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+            line-height: 1.4;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .kanban-card:hover {
+            border-color: var(--indigo-accent);
+            background-color: #FFFFFF;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+        }
+
+        .subtask-card-container {
+            margin-top: 16px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+
+        .subtask-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .subtask-header-row label {
+            margin-bottom: 0 !important;
+        }
+
+        .btn-add-subtask {
+            background-color: #F1F5F9;
+            color: var(--indigo-accent);
+            border: 1px solid var(--border-color);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-add-subtask:hover {
+            background-color: #E2E8F0;
+        }
+
+        .subtask-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .subtask-table th {
+            background-color: #F8FAFC;
+            padding: 8px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .subtask-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .subtask-table input[type="text"] {
+            padding: 6px 10px;
+            font-size: 13px;
+        }
+
+        .btn-del-subtask {
+            background: none;
+            border: none;
+            color: var(--danger-red);
+            font-size: 14px;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .btn-del-subtask:hover {
+            opacity: 1;
+        }
+
+        .project-table-card {
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow-x: auto;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            table-layout: fixed;
+            min-width: 900px;
+        }
+
+        table.data-table th {
+            background-color: #F8FAFC;
+            padding: 14px 16px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table.data-table td {
+            padding: 16px;
+            font-size: 13px;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        tr.project-row {
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        tr.project-row:hover {
+            background-color: #F8FAFC;
+        }
+
+        tr.project-row:last-child td {
+            border-bottom: none;
+        }
+
+        .text-bold {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .text-desc {
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .text-desc ul {
+            margin-top: 6px;
+            padding-left: 18px;
+            color: var(--text-secondary);
+        }
+
+        .text-desc li {
+            margin-bottom: 3px;
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+        }
+
+        .badge-p1 { background-color: var(--p1-green-bg); color: var(--p1-green-text); border: 1px solid var(--p1-green-border); }
+        .badge-p2 { background-color: var(--p2-yellow-bg); color: var(--p2-yellow-text); border: 1px solid var(--p2-yellow-border); }
+        .badge-p3 { background-color: var(--p3-orange-bg); color: var(--p3-orange-text); border: 1px solid var(--p3-orange-border); }
+        .badge-p4 { background-color: var(--p4-red-bg); color: var(--p4-red-text); border: 1px solid var(--p4-red-border); }
+        .badge-none { background-color: #F1F5F9; color: var(--text-secondary); border: 1px solid var(--border-color); }
+
+        .stepper-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 6px;
+            padding: 4px 8px;
+            width: fit-content;
+            transition: all 0.2s ease;
+        }
+
+        .stepper-value {
+            font-size: 12px;
+            font-weight: 700;
+            min-width: 36px;
+            text-align: center;
+        }
+
+        .stepper-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .btn-step {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 8px;
+            cursor: pointer;
+            padding: 0 2px;
+            line-height: 1;
+            opacity: 0.7;
+        }
+
+        .btn-step:hover {
+            opacity: 1;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 24px;
+        }
+
+        .modal-card-large {
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 90vw;
+            max-width: 1050px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #F8FAFC;
+        }
+
+        .modal-header h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 32px;
+            overflow-y: auto;
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .form-group input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--indigo-accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .modal-footer {
+            padding: 20px 32px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #F8FAFC;
+        }
+
+        .btn-secondary {
+            background-color: #FFFFFF;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            color: var(--text-primary);
+            background-color: #F1F5F9;
+        }
+
+        .btn-danger {
+            background-color: transparent;
+            color: var(--danger-red);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-danger:hover {
+            background-color: #FEF2F2;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .empty-workspace {
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            height: 100%;
+            min-height: 380px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 32px;
+        }
+
+        .empty-workspace h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .empty-workspace p {
+            font-size: 14px;
+            max-width: 440px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        .accent-spark {
+            color: var(--flash-400);
+            margin-bottom: 16px;
+            font-size: 24px;
+        }
+    </style>
 </head>
 <body>
 
-  <h1>Team Project Tracker</h1>
+    <header class="top-bar">
+        <div class="brand-group">
+            <button class="btn-toggle-sidebar" id="toggle-btn" onclick="toggleSidebarDrawer()" title="Open Navigation Menu">☰</button>
+            <img src="medallia wordmark.png" alt="Medallia" class="brand-logo-img">
+            <span class="divider">|</span>
+            <h1>Presales Projects</h1>
+        </div>
+    </header>
 
-  <div class="input-group">
-    <input type="text" id="taskInput" placeholder="Enter a new project task..." />
-    <button id="addBtn">Add Task</button>
-  </div>
+    <div class="app-container">
 
-  <ul id="taskList"></ul>
+        <!-- Flyout Navigation Drawer -->
+        <aside class="sidebar-drawer" id="app-drawer">
+            <div class="sidebar-section">
+                <ul class="nav-list">
+                    <li class="nav-item active" onclick="selectPillar(this, 'Home')">
+                        <div class="icon-badge">
+                            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                        </div>
+                        <span>Home</span>
+                    </li>
+                </ul>
+            </div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+            <div class="sidebar-section">
+                <div class="sidebar-section-label">Presales Pillars</div>
+                <ul class="nav-list">
+                    <li class="nav-item" onclick="selectPillar(this, 'Value Consulting Projects')">
+                        <div class="icon-badge">
+                            <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 15.66z"/><path d="M3 3v18h18v-2H5V3z"/></svg>
+                        </div>
+                        <span>Value Consulting Projects</span>
+                    </li>
+                    <li class="nav-item" onclick="selectPillar(this, 'Solutions Engineering Projects')">
+                        <div class="icon-badge">
+                            <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.04-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6-3.6z"/></svg>
+                        </div>
+                        <span>Solutions Engineering Projects</span>
+                    </li>
+                    <li class="nav-item" onclick="selectPillar(this, 'Demo Engineering Projects')">
+                        <div class="icon-badge">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                        <span>Demo Engineering Projects</span>
+                    </li>
+                    <li class="nav-item" onclick="selectPillar(this, 'RFP / Proposal Management Projects')">
+                        <div class="icon-badge">
+                            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                        </div>
+                        <span>RFP / Proposal Management Projects</span>
+                    </li>
+                </ul>
+            </div>
 
-    const SUPABASE_URL = 'https://lxwdxvbjnconirvhcvsq.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4d2R4dmJqbmNvbmlydmhjdnNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyNjEyMzksImV4cCI6MjEwNTgzNzIzOX0.SfkReq2x4IQjc62tNJJ81698UBJnTPzY1rqA_DF5nmQ';
+            <div class="sidebar-section">
+                <div class="sidebar-section-label">General</div>
+                <ul class="nav-list">
+                    <li class="nav-item" onclick="selectPillar(this, 'Analyst Reports')">
+                        <div class="icon-badge">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                        </div>
+                        <span>Analyst Reports</span>
+                    </li>
+                    <li class="nav-item" onclick="selectPillar(this, 'Leadership Projects')">
+                        <div class="icon-badge">
+                            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                        </div>
+                        <span>Leadership Projects</span>
+                    </li>
+                    <li class="nav-item" onclick="selectPillar(this, 'Other Projects')">
+                        <div class="icon-badge">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                        </div>
+                        <span>Other Projects</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        <div class="drawer-backdrop" id="drawer-backdrop" onclick="closeSidebarDrawer()"></div>
 
-    async function fetchTasks() {
-      const { data, error } = await supabase
-        .from('tasks')
-        .select('*')
-        .order('created_at', { ascending: true });
+        <main class="content-area">
+            <div class="content-header">
+                <h2 id="active-pillar-title">Home</h2>
+                <button class="btn-flash" id="action-btn" style="display: none;" onclick="openNewProjectModal()">+ Add project</button>
+            </div>
 
-      if (error) {
-        console.error('Error fetching tasks:', error);
-      } else {
-        renderTasks(data);
-      }
-    }
+            <div class="workspace-body" id="workspace-content">
+                
+                <!-- HOME VIEW DEFAULT -->
+                <div id="home-view">
+                    
+                    <!-- SECTION 1: EXECUTIVE SUMMARY -->
+                    <div class="dashboard-section">
+                        <div class="welcome-banner-compact">
+                            <p>Welcome to <strong>Medallia Presales Projects</strong> — the single source of truth for tracking and standardising strategic team initiatives.</p>
+                        </div>
 
-    function renderTasks(tasks) {
-      const taskList = document.getElementById('taskList');
-      taskList.innerHTML = '';
-      tasks.forEach((task) => {
-        const li = document.createElement('li');
-        li.textContent = task.name;
+                        <div class="kpi-grid">
+                            <div class="kpi-card accent-open">
+                                <div class="kpi-label">Open Projects</div>
+                                <div class="kpi-value" id="kpi-open-count">0</div>
+                            </div>
+                            <div class="kpi-card accent-completed">
+                                <div class="kpi-label">Completed</div>
+                                <div class="kpi-value" id="kpi-completed-count">0</div>
+                            </div>
+                            <div class="kpi-card accent-quarter">
+                                <div class="kpi-label">Due This Quarter</div>
+                                <div class="kpi-value" id="kpi-quarter-count">0</div>
+                            </div>
+                            <div class="kpi-card accent-blockers">
+                                <div class="kpi-label">Active Blockers</div>
+                                <div class="kpi-value" id="kpi-blockers-count">0</div>
+                            </div>
+                        </div>
+                    </div>
 
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Delete';
-        deleteBtn.className = 'delete-btn';
-        deleteBtn.onclick = () => deleteTask(task.id);
+                    <!-- SECTION 2: GUIDANCE & PRIORITIZATION -->
+                    <div class="dashboard-section">
+                        <div class="dashboard-section-title">Guidance & Prioritization</div>
+                        <div class="guidance-grid">
+                            
+                            <div class="howto-card">
+                                <div class="section-card-title">How To Add Projects</div>
+                                <ul class="howto-step-list">
+                                    <li class="howto-step">
+                                        <span class="step-num">1</span>
+                                        <span>Open the left menu <strong>(☰)</strong> and select your category.</span>
+                                    </li>
+                                    <li class="howto-step">
+                                        <span class="step-num">2</span>
+                                        <span>Click <strong>+ Add project</strong> in the top header.</span>
+                                    </li>
+                                    <li class="howto-step">
+                                        <span class="step-num">3</span>
+                                        <span>Fill in scope, lead, priority, dates, and blockers.</span>
+                                    </li>
+                                    <li class="howto-step">
+                                        <span class="step-num">4</span>
+                                        <span>Click any existing row or Kanban card to edit.</span>
+                                    </li>
+                                </ul>
+                            </div>
 
-        li.appendChild(deleteBtn);
-        taskList.appendChild(li);
-      });
-    }
+                            <div class="matrix-wrapper">
+                                <div class="eisenhower-container">
+                                    <div></div>
+                                    <div class="axis-label">Urgent</div>
+                                    <div class="axis-label">Not Urgent</div>
 
-    supabase
-      .channel('schema-db-changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'tasks' },
-        () => fetchTasks()
-      )
-      .subscribe();
+                                    <div class="axis-label y-axis">Important</div>
+                                    <div class="quadrant-card quad-p1">
+                                        <h4>Urgent / Important</h4>
+                                        <div class="level-subtitle">Do: Level 1</div>
+                                        <p>Critical tasks with firm deadlines, client commitments, or immediate operational risk.</p>
+                                    </div>
 
-    document.getElementById('addBtn').addEventListener('click', async () => {
-      const input = document.getElementById('taskInput');
-      if (input.value.trim() !== '') {
-        const { error } = await supabase.from('tasks').insert([{ name: input.value }]);
-        if (error) console.error('Error adding task:', error);
-        input.value = '';
-      }
-    });
+                                    <div class="quadrant-card quad-p2">
+                                        <h4>Not Urgent / Important</h4>
+                                        <div class="level-subtitle">Schedule: Level 2</div>
+                                        <p>Strategic, long-term initiatives that build core capabilities and support overall growth.</p>
+                                    </div>
 
-    async function deleteTask(id) {
-      const { error } = await supabase.from('tasks').delete().eq('id', id);
-      if (error) console.error('Error deleting task:', error);
-    }
+                                    <div class="axis-label y-axis">Not Important</div>
+                                    <div class="quadrant-card quad-p3">
+                                        <h4>Urgent / Not Important</h4>
+                                        <div class="level-subtitle">Delegate: Level 3</div>
+                                        <p>Time-sensitive tasks or fast turnarounds that can be reassigned or automated.</p>
+                                    </div>
 
-    fetchTasks();
-  </script>
+                                    <div class="quadrant-card quad-p4">
+                                        <h4>Not Important / Not Urgent</h4>
+                                        <div class="level-subtitle">Delete / Backlog: Level 4</div>
+                                        <p>Low-priority distractions, outdated tasks, or non-essential ideas to eliminate.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- SECTION 3: WORKLOAD & BLOCKER TRACKING -->
+                    <div class="dashboard-section">
+                        <div class="dashboard-section-title">Workload & Operational Tracking</div>
+                        <div class="dashboard-lower-grid">
+                            
+                            <div class="home-table-card">
+                                <div class="section-card-title">Active Projects by Owner</div>
+                                <table class="table-mini">
+                                    <thead>
+                                        <tr>
+                                            <th>Project Lead</th>
+                                            <th style="text-align: right;">Active Count</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="owner-tracker-tbody">
+                                        <!-- Dynamic JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="home-table-card">
+                                <div class="section-card-title">Active Blockers & Dependencies</div>
+                                <table class="table-mini">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 30%;">Project Name</th>
+                                            <th style="width: 50%;">Blocker / Dependency Detail</th>
+                                            <th style="width: 20%;">Due Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="blocker-tracker-tbody">
+                                        <!-- Dynamic JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- SECTION 4: RECENT UPDATES AND COMPLETED INITIATIVES -->
+                    <div class="dashboard-section">
+                        <div class="dashboard-section-title">Recent Updates and Completed Initiatives</div>
+                        
+                        <div class="updates-completed-grid">
+                            
+                            <div class="home-table-card card-tall">
+                                <div class="section-card-title">Most Recently Updated Projects</div>
+                                <table class="table-mini">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 45%;">Project</th>
+                                            <th style="width: 55%;">What Was Updated</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recent-updates-tbody">
+                                        <!-- Dynamic JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="home-table-card card-tall">
+                                <div class="section-card-title">Completed Initiatives</div>
+                                <table class="table-mini">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 25%;">Project Name</th>
+                                            <th style="width: 45%;">Project Description</th>
+                                            <th style="width: 15%;">Lead(s)</th>
+                                            <th style="width: 15%;">Completed Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="completed-tracker-tbody">
+                                        <!-- Dynamic JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- SECTION 5: PROJECT STAGE KANBAN BOARD -->
+                    <div class="dashboard-section">
+                        <div class="dashboard-section-title">Project Stage Overview (Kanban Board)</div>
+                        <div class="kanban-grid">
+                            
+                            <div class="kanban-column col-not-started">
+                                <div class="kanban-col-header">
+                                    <span class="kanban-col-title">Not Started</span>
+                                    <span class="kanban-col-count" id="count-not-started">0</span>
+                                </div>
+                                <div class="kanban-cards-container" id="kanban-not-started"></div>
+                            </div>
+
+                            <div class="kanban-column col-in-progress">
+                                <div class="kanban-col-header">
+                                    <span class="kanban-col-title">In Progress</span>
+                                    <span class="kanban-col-count" id="count-in-progress">0</span>
+                                </div>
+                                <div class="kanban-cards-container" id="kanban-in-progress"></div>
+                            </div>
+
+                            <div class="kanban-column col-on-hold">
+                                <div class="kanban-col-header">
+                                    <span class="kanban-col-title">On Hold</span>
+                                    <span class="kanban-col-count" id="count-on-hold">0</span>
+                                </div>
+                                <div class="kanban-cards-container" id="kanban-on-hold"></div>
+                            </div>
+
+                            <div class="kanban-column col-completed">
+                                <div class="kanban-col-header">
+                                    <span class="kanban-col-title">Completed</span>
+                                    <span class="kanban-col-count" id="count-completed">0</span>
+                                </div>
+                                <div class="kanban-cards-container" id="kanban-completed"></div>
+                            </div>
+
+                            <div class="kanban-column col-blocked">
+                                <div class="kanban-col-header">
+                                    <span class="kanban-col-title">Blocked</span>
+                                    <span class="kanban-col-count" id="count-blocked">0</span>
+                                </div>
+                                <div class="kanban-cards-container" id="kanban-blocked"></div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- LEADERSHIP PROJECTS VIEW -->
+                <div id="leadership-view" style="display: none;">
+                    <div class="project-table-card">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 18%;">Project</th>
+                                    <th style="width: 30%;">Description</th>
+                                    <th style="width: 14%;">Project Lead(s)</th>
+                                    <th style="width: 16%;">Next Step</th>
+                                    <th style="width: 8%;">Progress</th>
+                                    <th style="width: 14%;">Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leadership-table-body">
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p1" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Organizational Design</td>
+                                    <td class="text-desc row-desc">Create an Organizational Design representing the 4 Pillars of Presales (SE, DE, Value Advisory, Proposal Mgt). Include Structure, Objectives, Contacts, and Slacks.</td>
+                                    <td class="row-lead">Courtney Shealy</td>
+                                    <td class="row-nextstep">Draft initial pillar charters and review with ELT</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="Urgent / Important"><span class="priority-badge badge-p1">Urgent / Important</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p2" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Create a Charter for each Pillar</td>
+                                    <td class="text-desc row-desc">Charter describing primary objective, team organization, tools for toolkit (existing/planned), and example successes.</td>
+                                    <td class="row-lead">Courtney Shealy</td>
+                                    <td class="row-nextstep">Gather feedback from SE and Value Consulting leads</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="Not Urgent / Important"><span class="priority-badge badge-p2">Not Urgent / Important</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p3" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">KPIs</td>
+                                    <td class="text-desc row-desc">Identify Key Performance Metrics by Region</td>
+                                    <td class="row-lead">Courtney Shealy</td>
+                                    <td class="row-nextstep">Align regional metrics with Q3 sales targets</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="Not Urgent / Important"><span class="priority-badge badge-p2">Not Urgent / Important</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SOLUTIONS ENGINEERING PROJECTS VIEW -->
+                <div id="solutions-view" style="display: none;">
+                    <div class="project-table-card">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 18%;">Project</th>
+                                    <th style="width: 30%;">Description</th>
+                                    <th style="width: 14%;">Project Lead(s)</th>
+                                    <th style="width: 16%;">Next Step</th>
+                                    <th style="width: 8%;">Progress</th>
+                                    <th style="width: 14%;">Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody id="solutions-table-body">
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p4" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">SE Charter</td>
+                                    <td class="text-desc row-desc">Definition of what we do, value we provide, how to partner with us - this is our scope and how we are measured and evaluated. See Slide.</td>
+                                    <td class="row-lead">Courtney Shealy</td>
+                                    <td class="row-nextstep">Finalize draft slide deck for sales team rollout</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="Urgent / Important"><span class="priority-badge badge-p1">Urgent / Important</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p5" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Design a SE Onboarding Plan</td>
+                                    <td class="text-desc row-desc">
+                                        Create and Finalize Field SE Onboarding Plan with regional nuances documented.
+                                        <ul>
+                                            <li><strong>Learning Plan & Project Work:</strong> Mentor/Shadow Assignments and org navigation.</li>
+                                            <li><strong>Operational Setup:</strong> Pipeline views, deal progress tracking, and PAF timeline management.</li>
+                                        </ul>
+                                    </td>
+                                    <td class="row-lead">Ashley Tomic</td>
+                                    <td class="row-nextstep">Document regional nuances for EMEA and APAC teams</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="Not Urgent / Important"><span class="priority-badge badge-p2">Not Urgent / Important</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p6" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Rules of Engagement</td>
+                                    <td class="text-desc row-desc">Update ‘How to Work’ with us Template. Includes SE support request workflow and pre-engagement criteria for AE/EM requests.</td>
+                                    <td class="row-lead">Unassigned</td>
+                                    <td class="row-nextstep">Assign project owner and outline template draft</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p7" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">FY2027 Toolkit</td>
+                                    <td class="text-desc row-desc">
+                                        Provide a brief outline and description of tools used by Solution Engineering.
+                                        <ul>
+                                            <li><strong>Growth/Expansion:</strong> Demos, Walnuts, Custom Stories, POCs, POTs, Workshops, RFPs/RFIs, Data Creation.</li>
+                                            <li><strong>Protecting the Base:</strong> V360 Client Sandboxes and Value Assessments with PostSales.</li>
+                                        </ul>
+                                    </td>
+                                    <td class="row-lead">Unassigned</td>
+                                    <td class="row-nextstep">Catalog existing Walnut demo assets</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p8" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Example Success</td>
+                                    <td class="text-desc row-desc">Customer Proof Points learned in cycles. Catalog by Vertical and Use Case for easy cross referencing and knowledge sharing.</td>
+                                    <td class="row-lead">Unassigned</td>
+                                    <td class="row-nextstep">Build repository structure in internal portal</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p9" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Innovation Workstreams</td>
+                                    <td class="text-desc row-desc">Fun, innovative projects, tips/tricks that should be shared across the team.</td>
+                                    <td class="row-lead">Unassigned</td>
+                                    <td class="row-nextstep">Schedule bi-weekly innovation showcase call</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p10" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">V360/Protect the Base</td>
+                                    <td class="text-desc row-desc">Special Projects attached to ELT tracking.</td>
+                                    <td class="row-lead">Unassigned</td>
+                                    <td class="row-nextstep">Sync with ELT sponsors on tracking cadence</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- DEMO ENGINEERING PROJECTS VIEW -->
+                <div id="demo-view" style="display: none;">
+                    <div class="project-table-card">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 18%;">Project</th>
+                                    <th style="width: 30%;">Description</th>
+                                    <th style="width: 14%;">Project Lead(s)</th>
+                                    <th style="width: 16%;">Next Step</th>
+                                    <th style="width: 8%;">Progress</th>
+                                    <th style="width: 14%;">Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody id="demo-table-body">
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p11" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">DE Charter</td>
+                                    <td class="text-desc row-desc">Definition of what we do, value we provide, how to partner with us - this is our scope and how we are measured and evaluated. See Slide. Establish Goals and Expectations of Demo Engineering Team.</td>
+                                    <td class="row-lead">Kelly Redondo</td>
+                                    <td class="row-nextstep">Draft charter document for team review</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="Urgent / Important"><span class="priority-badge badge-p1">Urgent / Important</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p12" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Rules of Engagement</td>
+                                    <td class="text-desc row-desc">Update ‘How to Work’ with us Template.</td>
+                                    <td class="row-lead">Kelly Redondo</td>
+                                    <td class="row-nextstep">Publish updated request intake form</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="Not Urgent / Important"><span class="priority-badge badge-p2">Not Urgent / Important</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p13" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Project Gelato</td>
+                                    <td class="text-desc row-desc">Demo Rewrites and maintenance Planning.</td>
+                                    <td class="row-lead">Kelly Redondo</td>
+                                    <td class="row-nextstep">Outline sprint plan for core demo environments</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="Urgent / Important"><span class="priority-badge badge-p1">Urgent / Important</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p14" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Team Overview/Goals</td>
+                                    <td class="text-desc row-desc">Establish Goals and Expectations of Demo Engineering Team.</td>
+                                    <td class="row-lead">Kelly Redondo</td>
+                                    <td class="row-nextstep">Align team KPIs with Q3 presales targets</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="Not Urgent / Important"><span class="priority-badge badge-p2">Not Urgent / Important</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- RFP / PROPOSAL MANAGEMENT PROJECTS VIEW -->
+                <div id="rfp-view" style="display: none;">
+                    <div class="project-table-card">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 18%;">Project</th>
+                                    <th style="width: 30%;">Description</th>
+                                    <th style="width: 14%;">Project Lead(s)</th>
+                                    <th style="width: 16%;">Next Step</th>
+                                    <th style="width: 8%;">Progress</th>
+                                    <th style="width: 14%;">Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rfp-table-body">
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p15" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Proposals Charter</td>
+                                    <td class="text-desc row-desc">Definition of what we do, value we provide, how to partner with us - this is our scope and how we are measured and evaluated. See Slide. Establish Goals and Expectations of Proposal Team.</td>
+                                    <td class="row-lead">Unassigned</td>
+                                    <td class="row-nextstep">Draft proposal team goals and SLA framework</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p16" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Team Onboarding Plan</td>
+                                    <td class="text-desc row-desc">Create and Finalize Field Onboarding Plan.</td>
+                                    <td class="row-lead">Unassigned</td>
+                                    <td class="row-nextstep">Outline onboarding curriculum for proposal managers</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p17" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Rules of Engagement</td>
+                                    <td class="text-desc row-desc">Update ‘How to Work’ with us Template.</td>
+                                    <td class="row-lead">Unassigned</td>
+                                    <td class="row-nextstep">Define RFP submission lead-time guidelines</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p18" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">RFP Pipeline Tracking</td>
+                                    <td class="text-desc row-desc">
+                                        Automate RFP Tracking by stage/status.
+                                        <ul>
+                                            <li>Include RFP support requested, SE/AE Assigned, Qualification, deal goals, submission target date, vertical, region, and opportunity value.</li>
+                                        </ul>
+                                    </td>
+                                    <td class="row-lead">Unassigned</td>
+                                    <td class="row-nextstep">Build Salesforce tracking fields for RFP intake</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p19" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Quarterly RFP Review</td>
+                                    <td class="text-desc row-desc">Provide a Summary of RFPs requested, submitted or killed. Provide POV on common questions, program goals, teaming needs, and data sources across verticals and regions.</td>
+                                    <td class="row-lead">Unassigned</td>
+                                    <td class="row-nextstep">Aggregate Q2 RFP analytics and common question trends</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- VALUE CONSULTING PROJECTS VIEW -->
+                <div id="value-view" style="display: none;">
+                    <div class="project-table-card">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 18%;">Project</th>
+                                    <th style="width: 30%;">Description</th>
+                                    <th style="width: 14%;">Project Lead(s)</th>
+                                    <th style="width: 16%;">Next Step</th>
+                                    <th style="width: 8%;">Progress</th>
+                                    <th style="width: 14%;">Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody id="value-table-body">
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p20" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Team Onboarding Plan</td>
+                                    <td class="text-desc row-desc">Create and Finalize Field Onboarding Plan with regional nuances documented for Value Consultants.</td>
+                                    <td class="row-lead">Unassigned</td>
+                                    <td class="row-nextstep">Draft VC specific onboarding track</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p21" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Rules of Engagement</td>
+                                    <td class="text-desc row-desc">Update ‘How to Work’ with us Template.</td>
+                                    <td class="row-lead">Unassigned</td>
+                                    <td class="row-nextstep">Define engagement criteria for Value Consulting</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p22" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Value Consulting Charter</td>
+                                    <td class="text-desc row-desc">Definition of what we do, value we provide, how to partner with us - this is our scope and how we are measured and evaluated. See Slide.</td>
+                                    <td class="row-lead">Unassigned</td>
+                                    <td class="row-nextstep">Finalize Value Consulting charter slide deck</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
+                                </tr>
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p23" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Example Successes</td>
+                                    <td class="text-desc row-desc">Document Repository of assets created/delivered to clients. Provide annotations for ease of use or discovery by teammates and make all future assets discoverable for learning.</td>
+                                    <td class="row-lead">Marilyn Quaidoo</td>
+                                    <td class="row-nextstep">Setup central folder taxonomy for client deliverables</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="Not Urgent / Important"><span class="priority-badge badge-p2">Not Urgent / Important</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ANALYST REPORTS VIEW -->
+                <div id="analyst-view" style="display: none;">
+                    <div class="project-table-card">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 18%;">Project</th>
+                                    <th style="width: 30%;">Description</th>
+                                    <th style="width: 14%;">Project Lead(s)</th>
+                                    <th style="width: 16%;">Next Step</th>
+                                    <th style="width: 8%;">Progress</th>
+                                    <th style="width: 14%;">Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody id="analyst-table-body">
+                                <tr class="project-row" onclick="editRowModal(this)" data-id="p24" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
+                                    <td class="text-bold row-title">Gartner Magic Quadrant Q3 Review</td>
+                                    <td class="text-desc row-desc">Coordinate presales technical submissions and demonstration scripts for annual Gartner Experience Management evaluation.</td>
+                                    <td class="row-lead">Unassigned</td>
+                                    <td class="row-nextstep">Gather SE product proof points</td>
+                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
+                                    <td class="row-priority" data-priority="Urgent / Important"><span class="priority-badge badge-p1">Urgent / Important</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- GENERIC CATEGORY VIEW -->
+                <div id="category-view" style="display: none; height: 100%;">
+                    <div class="empty-workspace">
+                        <div class="accent-spark">◆</div>
+                        <h3 id="category-empty-title">No projects tracked yet</h3>
+                        <p id="category-empty-desc">Click "+ Add project" above to begin populating this workspace.</p>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+    </div>
+
+    <div class="modal-overlay" id="edit-modal">
+        <div class="modal-card-large">
+            <div class="modal-header">
+                <h3 id="modal-title-text">Edit Project Details</h3>
+                <button class="btn-secondary" onclick="closeEditModal()">✕</button>
+            </div>
+            
+            <div class="modal-body">
+                <div>
+                    <div class="form-group">
+                        <label>Project Title</label>
+                        <input type="text" id="modal-input-title" placeholder="Project Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="modal-input-desc" rows="5" placeholder="Detailed project scope..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Next Step</label>
+                        <textarea id="modal-input-nextstep" rows="3" placeholder="Immediate action item..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Blockers / Dependencies</label>
+                        <textarea id="modal-input-blockers" rows="3" placeholder="List active blockers or team dependencies..."></textarea>
+                    </div>
+
+                    <!-- Sub-Tasks Section (Modal View Only) -->
+                    <div class="subtask-card-container">
+                        <div class="subtask-header-row">
+                            <label>Project Sub-Tasks</label>
+                            <button class="btn-add-subtask" onclick="addSubTaskRow()">+ Add Sub-Task</button>
+                        </div>
+                        <table class="subtask-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10%;">Done</th>
+                                    <th style="width: 55%;">Sub-Task Name</th>
+                                    <th style="width: 30%;">Sub-Task Owner</th>
+                                    <th style="width: 5%;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="subtask-table-body">
+                                <!-- Dynamic Sub-Tasks -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="modal-input-status" onchange="handleStatusSelectChange()">
+                            <option value="Not Started">Not Started</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="On Hold">On Hold</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Blocked">Blocked</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Priority</label>
+                        <select id="modal-input-priority">
+                            <option value="Urgent / Important">Urgent / Important</option>
+                            <option value="Not Urgent / Important">Not Urgent / Important</option>
+                            <option value="Urgent / Not Important">Urgent / Not Important</option>
+                            <option value="Not Important / Not Urgent">Not Important / Not Urgent</option>
+                            <option value="None">Unassigned</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Project Lead(s)</label>
+                        <input type="text" id="modal-input-lead" placeholder="e.g. Courtney Shealy, Alex M.">
+                    </div>
+
+                    <div class="grid-2col">
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="date" id="modal-input-startdate">
+                        </div>
+                        <div class="form-group">
+                            <label>Due Date</label>
+                            <input type="date" id="modal-input-duedate">
+                        </div>
+                    </div>
+
+                    <div class="grid-2col">
+                        <div class="form-group">
+                            <label>Progress (%)</label>
+                            <input type="number" id="modal-input-progress" min="0" max="100" step="5" value="0" oninput="handleProgressInputChange()">
+                        </div>
+                        <div class="form-group">
+                            <label>Estimated Effort</label>
+                            <input type="text" id="modal-input-effort" placeholder="e.g. 2 Weeks, 10 hrs">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-danger" id="btn-delete-modal" onclick="deleteCurrentRow()">Delete Project</button>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn-secondary" onclick="closeEditModal()">Cancel</button>
+                    <button class="btn-flash" onclick="saveModalChanges()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentActivePillar = 'Home';
+        let activeEditingRow = null;
+        let recentUpdatesLog = []; // Real-time activity queue
+
+        function getProgressGradientStyle(pct) {
+            let r, g, b = 0;
+            if (pct < 50) {
+                r = 239;
+                g = Math.round(68 + (150 * (pct / 50)));
+                b = 68;
+            } else {
+                r = Math.round(239 - (223 * ((pct - 50) / 50)));
+                g = 180;
+                b = 70;
+            }
+
+            const bgColor = `rgba(${r}, ${g}, ${b}, 0.12)`;
+            const borderCol = `rgba(${r}, ${g}, ${b}, 0.35)`;
+            const textColor = `rgb(${Math.max(0, r - 40)}, ${Math.max(0, g - 20)}, ${b})`;
+
+            return { bgColor, borderCol, textColor };
+        }
+
+        function renderStepperHTML(val) {
+            const { bgColor, borderCol, textColor } = getProgressGradientStyle(val);
+            return `
+                <div class="stepper-container" style="background-color: ${bgColor}; border: 1px solid ${borderCol};">
+                    <span class="stepper-value" style="color: ${textColor};">${val}%</span>
+                    <div class="stepper-btns">
+                        <button class="btn-step" style="color: ${textColor};" onclick="changeRowProgress(this, 5)">▲</button>
+                        <button class="btn-step" style="color: ${textColor};" onclick="changeRowProgress(this, -5)">▼</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateAllProgressCells() {
+            document.querySelectorAll('.row-progress').forEach(cell => {
+                const val = parseInt(cell.getAttribute('data-value')) || 0;
+                cell.innerHTML = renderStepperHTML(val);
+            });
+        }
+
+        /* Synchronization Logic */
+        function handleStatusSelectChange() {
+            const statusVal = document.getElementById('modal-input-status').value;
+            const progressInput = document.getElementById('modal-input-progress');
+            if (statusVal === 'Completed') {
+                progressInput.value = 100;
+            } else if (parseInt(progressInput.value) === 100) {
+                progressInput.value = 90;
+            }
+        }
+
+        function handleProgressInputChange() {
+            const progressInput = document.getElementById('modal-input-progress');
+            const statusSelect = document.getElementById('modal-input-status');
+            let val = parseInt(progressInput.value) || 0;
+            
+            if (val >= 100) {
+                progressInput.value = 100;
+                statusSelect.value = 'Completed';
+            } else if (statusSelect.value === 'Completed') {
+                statusSelect.value = 'In Progress';
+            }
+        }
+
+        /* Sub-Task Rows Logic inside Modal */
+        function addSubTaskRow(taskName = '', ownerName = '', done = false) {
+            const tbody = document.getElementById('subtask-table-body');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="text-align: center;"><input type="checkbox" class="subtask-chk" ${done ? 'checked' : ''}></td>
+                <td><input type="text" class="subtask-title-input" value="${taskName}" placeholder="Sub-task name..."></td>
+                <td><input type="text" class="subtask-owner-input" value="${ownerName}" placeholder="Assigned lead..."></td>
+                <td style="text-align: center;"><button class="btn-del-subtask" onclick="this.closest('tr').remove()">✕</button></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function getSubTasksFromModal() {
+            const rows = document.querySelectorAll('#subtask-table-body tr');
+            const subtasks = [];
+            rows.forEach(r => {
+                const title = r.querySelector('.subtask-title-input')?.value.trim();
+                const owner = r.querySelector('.subtask-owner-input')?.value.trim();
+                const done = r.querySelector('.subtask-chk')?.checked || false;
+                if (title) {
+                    subtasks.push({ title, owner, done });
+                }
+            });
+            return subtasks;
+        }
+
+        function isDueDateInCurrentFiscalQuarter(dateStr) {
+            if (!dateStr) return false;
+            const dueDate = new Date(dateStr);
+            if (isNaN(dueDate.getTime())) return false;
+
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+
+            let qStartMonth, qEndMonth, fYear = year;
+            
+            if (month >= 1 && month <= 3) { qStartMonth = 1; qEndMonth = 3; }       // Q1: Feb - Apr
+            else if (month >= 4 && month <= 6) { qStartMonth = 4; qEndMonth = 6; }  // Q2: May - Jul
+            else if (month >= 7 && month <= 9) { qStartMonth = 7; qEndMonth = 9; }  // Q3: Aug - Oct
+            else { 
+                qStartMonth = 10; qEndMonth = 0;                                   // Q4: Nov - Jan
+                if (month === 0) fYear = year - 1;
+            }
+
+            const dMonth = dueDate.getMonth();
+            const dYear = dueDate.getFullYear();
+
+            if (qStartMonth === 10) {
+                return (dYear === fYear && dMonth >= 10) || (dYear === fYear + 1 && dMonth === 0);
+            } else {
+                return dYear === fYear && dMonth >= qStartMonth && dMonth <= qEndMonth;
+            }
+        }
+
+        function pushRecentUpdate(title, changeText) {
+            recentUpdatesLog = recentUpdatesLog.filter(u => u.title !== title);
+            recentUpdatesLog.unshift({
+                title,
+                detail: changeText,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            });
+        }
+
+        function refreshHomeDashboard() {
+            const allRows = document.querySelectorAll('tr.project-row');
+            
+            let openCount = 0;
+            let completedCount = 0;
+            let quarterCount = 0;
+            let blockersCount = 0;
+
+            const ownerCounts = {};
+            const blockerList = [];
+            const completedList = [];
+
+            const kanbanBuckets = {
+                'Not Started': [],
+                'In Progress': [],
+                'On Hold': [],
+                'Completed': [],
+                'Blocked': []
+            };
+
+            allRows.forEach(row => {
+                const title = row.querySelector('.row-title')?.innerText || 'Untitled';
+                const desc = row.querySelector('.row-desc')?.innerText || '';
+                const status = row.getAttribute('data-status') || 'Not Started';
+                const lead = row.querySelector('.row-lead')?.innerText || 'Unassigned';
+                const dueDate = row.getAttribute('data-duedate') || '';
+                const blockers = row.getAttribute('data-blockers')?.trim() || '';
+
+                if (kanbanBuckets[status]) {
+                    kanbanBuckets[status].push({ title, element: row });
+                } else {
+                    kanbanBuckets['Not Started'].push({ title, element: row });
+                }
+
+                if (status === 'Completed') {
+                    completedCount++;
+                    completedList.push({ title, desc, lead, dueDate });
+                } else {
+                    openCount++;
+                    // STRICT REQUIREMENT: Only count overall Project Lead(s), ignore subtasks
+                    const leads = lead.split(',').map(l => l.trim());
+                    leads.forEach(l => {
+                        if (l) ownerCounts[l] = (ownerCounts[l] || 0) + 1;
+                    });
+                }
+
+                if (isDueDateInCurrentFiscalQuarter(dueDate)) {
+                    quarterCount++;
+                }
+
+                if (blockers.length > 0) {
+                    blockersCount++;
+                    blockerList.push({ title, blockers, dueDate });
+                }
+            });
+
+            document.getElementById('kpi-open-count').innerText = openCount;
+            document.getElementById('kpi-completed-count').innerText = completedCount;
+            document.getElementById('kpi-quarter-count').innerText = quarterCount;
+            document.getElementById('kpi-blockers-count').innerText = blockersCount;
+
+            // Render Owner Tracker Table
+            const ownerTbody = document.getElementById('owner-tracker-tbody');
+            ownerTbody.innerHTML = '';
+            
+            const sortedOwners = Object.keys(ownerCounts).sort((a, b) => ownerCounts[b] - ownerCounts[a]);
+            if (sortedOwners.length === 0) {
+                ownerTbody.innerHTML = `<tr><td colspan="2" style="color: var(--text-secondary); text-align: center;">No active leads assigned</td></tr>`;
+            } else {
+                sortedOwners.forEach(owner => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight: 500;">${owner}</td>
+                        <td style="text-align: right;"><span class="badge-count">${ownerCounts[owner]}</span></td>
+                    `;
+                    ownerTbody.appendChild(tr);
+                });
+            }
+
+            // Render Active Blockers Table
+            const blockerTbody = document.getElementById('blocker-tracker-tbody');
+            blockerTbody.innerHTML = '';
+
+            if (blockerList.length === 0) {
+                blockerTbody.innerHTML = `<tr><td colspan="3" style="color: var(--text-secondary); text-align: center;">No active blockers or dependencies reported</td></tr>`;
+            } else {
+                blockerList.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight: 600;">${item.title}</td>
+                        <td class="blocker-text-highlight">${item.blockers}</td>
+                        <td style="color: var(--text-secondary);">${item.dueDate || 'No Due Date'}</td>
+                    `;
+                    blockerTbody.appendChild(tr);
+                });
+            }
+
+            // Render Completed Projects Table
+            const completedTbody = document.getElementById('completed-tracker-tbody');
+            completedTbody.innerHTML = '';
+
+            if (completedList.length === 0) {
+                completedTbody.innerHTML = `<tr><td colspan="4" style="color: var(--text-secondary); text-align: center;">No completed projects yet</td></tr>`;
+            } else {
+                completedList.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight: 600;">${item.title}</td>
+                        <td style="color: var(--text-secondary);">${item.desc}</td>
+                        <td>${item.lead}</td>
+                        <td style="color: var(--text-secondary);">${item.dueDate || 'Completed'}</td>
+                    `;
+                    completedTbody.appendChild(tr);
+                });
+            }
+
+            // Render Most Recently Updated Projects
+            const updatesTbody = document.getElementById('recent-updates-tbody');
+            updatesTbody.innerHTML = '';
+
+            if (recentUpdatesLog.length === 0) {
+                updatesTbody.innerHTML = `<tr><td colspan="2" style="color: var(--text-secondary); text-align: center;">No recent updates logged in this session</td></tr>`;
+            } else {
+                recentUpdatesLog.slice(0, 6).forEach(update => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight: 600;">${update.title} <span class="update-time-tag">(${update.timestamp})</span></td>
+                        <td><span class="update-detail-badge">${update.detail}</span></td>
+                    `;
+                    updatesTbody.appendChild(tr);
+                });
+            }
+
+            // Render Clickable Kanban Cards
+            const kanbanKeys = [
+                { key: 'Not Started', id: 'kanban-not-started', countId: 'count-not-started' },
+                { key: 'In Progress', id: 'kanban-in-progress', countId: 'count-in-progress' },
+                { key: 'On Hold', id: 'kanban-on-hold', countId: 'count-on-hold' },
+                { key: 'Completed', id: 'kanban-completed', countId: 'count-completed' },
+                { key: 'Blocked', id: 'kanban-blocked', countId: 'count-blocked' }
+            ];
+
+            kanbanKeys.forEach(kb => {
+                const container = document.getElementById(kb.id);
+                const countBadge = document.getElementById(kb.countId);
+                const items = kanbanBuckets[kb.key] || [];
+
+                container.innerHTML = '';
+                countBadge.innerText = items.length;
+
+                if (items.length === 0) {
+                    container.innerHTML = `<div style="font-size: 11px; color: var(--text-secondary); text-align: center; margin-top: 12px; font-style: italic;">No items</div>`;
+                } else {
+                    items.forEach(item => {
+                        const card = document.createElement('div');
+                        card.className = 'kanban-card';
+                        card.innerText = item.title;
+                        card.onclick = function() {
+                            editRowModal(item.element);
+                        };
+                        container.appendChild(card);
+                    });
+                }
+            });
+        }
+
+        function toggleSidebarDrawer() {
+            const drawer = document.getElementById('app-drawer');
+            const backdrop = document.getElementById('drawer-backdrop');
+            const toggleBtn = document.getElementById('toggle-btn');
+
+            drawer.classList.toggle('open');
+            if (drawer.classList.contains('open')) {
+                backdrop.classList.add('show');
+                toggleBtn.classList.add('active');
+            } else {
+                backdrop.classList.remove('show');
+                toggleBtn.classList.remove('active');
+            }
+        }
+
+        function closeSidebarDrawer() {
+            const drawer = document.getElementById('app-drawer');
+            const backdrop = document.getElementById('drawer-backdrop');
+            const toggleBtn = document.getElementById('toggle-btn');
+
+            drawer.classList.remove('open');
+            backdrop.classList.remove('show');
+            toggleBtn.classList.remove('active');
+        }
+
+        function selectPillar(element, pillarName) {
+            currentActivePillar = pillarName;
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+
+            element.classList.add('active');
+            document.getElementById('active-pillar-title').textContent = pillarName;
+
+            const views = {
+                'Home': document.getElementById('home-view'),
+                'Leadership Projects': document.getElementById('leadership-view'),
+                'Solutions Engineering Projects': document.getElementById('solutions-view'),
+                'Demo Engineering Projects': document.getElementById('demo-view'),
+                'RFP / Proposal Management Projects': document.getElementById('rfp-view'),
+                'Value Consulting Projects': document.getElementById('value-view'),
+                'Analyst Reports': document.getElementById('analyst-view'),
+                'Other Projects': document.getElementById('category-view')
+            };
+
+            const actionBtn = document.getElementById('action-btn');
+
+            Object.keys(views).forEach(v => {
+                if (views[v]) views[v].style.display = 'none';
+            });
+
+            if (pillarName === 'Home') {
+                if (views['Home']) views['Home'].style.display = 'block';
+                actionBtn.style.display = 'none';
+                refreshHomeDashboard();
+            } else if (views[pillarName]) {
+                views[pillarName].style.display = 'block';
+                actionBtn.style.display = 'block';
+            } else {
+                if (views['Other Projects']) views['Other Projects'].style.display = 'block';
+                actionBtn.style.display = 'block';
+                document.getElementById('category-empty-title').textContent = `No projects in ${pillarName}`;
+                document.getElementById('category-empty-desc').textContent = `Click "+ Add project" above to begin tracking initiatives for this category.`;
+            }
+
+            closeSidebarDrawer();
+        }
+
+        function editRowModal(trElement) {
+            activeEditingRow = trElement;
+            document.getElementById('modal-title-text').textContent = 'Edit Project Details';
+            document.getElementById('btn-delete-modal').style.display = 'block';
+
+            document.getElementById('modal-input-title').value = trElement.querySelector('.row-title').innerText;
+            document.getElementById('modal-input-desc').value = trElement.querySelector('.row-desc').innerText;
+            document.getElementById('modal-input-lead').value = trElement.querySelector('.row-lead').innerText;
+            document.getElementById('modal-input-nextstep').value = trElement.querySelector('.row-nextstep').innerText;
+            
+            const rawVal = parseInt(trElement.querySelector('.row-progress').getAttribute('data-value')) || 0;
+            document.getElementById('modal-input-progress').value = rawVal;
+            
+            const savedPriority = trElement.querySelector('.row-priority').getAttribute('data-priority') || 'None';
+            document.getElementById('modal-input-priority').value = savedPriority;
+
+            document.getElementById('modal-input-startdate').value = trElement.getAttribute('data-startdate') || '';
+            document.getElementById('modal-input-duedate').value = trElement.getAttribute('data-duedate') || '';
+            document.getElementById('modal-input-blockers').value = trElement.getAttribute('data-blockers') || '';
+            document.getElementById('modal-input-status').value = trElement.getAttribute('data-status') || 'Not Started';
+            document.getElementById('modal-input-effort').value = trElement.getAttribute('data-effort') || '';
+
+            // Populate Sub-Tasks in Modal
+            const subtaskTbody = document.getElementById('subtask-table-body');
+            subtaskTbody.innerHTML = '';
+            try {
+                const subtasks = JSON.parse(trElement.getAttribute('data-subtasks') || '[]');
+                subtasks.forEach(st => addSubTaskRow(st.title, st.owner, st.done));
+            } catch(e) {}
+
+            document.getElementById('edit-modal').style.display = 'flex';
+        }
+
+        function openNewProjectModal() {
+            activeEditingRow = null;
+            document.getElementById('modal-title-text').textContent = `Add Project to ${currentActivePillar}`;
+            document.getElementById('btn-delete-modal').style.display = 'none';
+
+            document.getElementById('modal-input-title').value = '';
+            document.getElementById('modal-input-desc').value = '';
+            document.getElementById('modal-input-lead').value = '';
+            document.getElementById('modal-input-nextstep').value = '';
+            document.getElementById('modal-input-progress').value = 0;
+            document.getElementById('modal-input-priority').value = 'None';
+            document.getElementById('modal-input-startdate').value = '';
+            document.getElementById('modal-input-duedate').value = '';
+            document.getElementById('modal-input-blockers').value = '';
+            document.getElementById('modal-input-status').value = 'Not Started';
+            document.getElementById('modal-input-effort').value = '';
+
+            document.getElementById('subtask-table-body').innerHTML = '';
+
+            document.getElementById('edit-modal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').style.display = 'none';
+        }
+
+        function getPriorityBadgeHTML(priority) {
+            let badgeClass = 'badge-p1';
+            if (priority === 'Not Urgent / Important') badgeClass = 'badge-p2';
+            if (priority === 'Urgent / Not Important') badgeClass = 'badge-p3';
+            if (priority === 'Not Important / Not Urgent') badgeClass = 'badge-p4';
+            if (priority === 'None' || !priority) return `<span class="priority-badge badge-none">Unassigned</span>`;
+
+            return `<span class="priority-badge ${badgeClass}">${priority}</span>`;
+        }
+
+        function changeRowProgress(btnElement, delta) {
+            const progressCell = btnElement.closest('.row-progress');
+            const row = btnElement.closest('tr.project-row');
+            const title = row.querySelector('.row-title')?.innerText || 'Project';
+
+            let currentVal = parseInt(progressCell.getAttribute('data-value')) || 0;
+            currentVal = Math.max(0, Math.min(100, currentVal + delta));
+            progressCell.setAttribute('data-value', currentVal);
+            progressCell.innerHTML = renderStepperHTML(currentVal);
+            
+            // Sync status to Completed if progress becomes 100%
+            if (currentVal === 100) {
+                row.setAttribute('data-status', 'Completed');
+            } else if (row.getAttribute('data-status') === 'Completed') {
+                row.setAttribute('data-status', 'In Progress');
+            }
+
+            pushRecentUpdate(title, `Progress updated to ${currentVal}%`);
+            refreshHomeDashboard();
+        }
+
+        function getTargetTbodyByPillar(pillar) {
+            if (pillar === 'Leadership Projects') return document.getElementById('leadership-table-body');
+            if (pillar === 'Solutions Engineering Projects') return document.getElementById('solutions-table-body');
+            if (pillar === 'Demo Engineering Projects') return document.getElementById('demo-table-body');
+            if (pillar === 'RFP / Proposal Management Projects') return document.getElementById('rfp-table-body');
+            if (pillar === 'Value Consulting Projects') return document.getElementById('value-table-body');
+            if (pillar === 'Analyst Reports') return document.getElementById('analyst-table-body');
+            return null;
+        }
+
+        function saveModalChanges() {
+            const title = document.getElementById('modal-input-title').value;
+            const desc = document.getElementById('modal-input-desc').value;
+            const lead = document.getElementById('modal-input-lead').value || 'Unassigned';
+            const nextStep = document.getElementById('modal-input-nextstep').value;
+            
+            let progressVal = parseInt(document.getElementById('modal-input-progress').value) || 0;
+            progressVal = Math.max(0, Math.min(100, progressVal));
+            
+            const priority = document.getElementById('modal-input-priority').value;
+            const startDate = document.getElementById('modal-input-startdate').value;
+            const dueDate = document.getElementById('modal-input-duedate').value;
+            const blockers = document.getElementById('modal-input-blockers').value;
+            let status = document.getElementById('modal-input-status').value;
+            const effort = document.getElementById('modal-input-effort').value;
+
+            // Automation check
+            if (progressVal === 100) {
+                status = 'Completed';
+            }
+
+            const subtasksJSON = JSON.stringify(getSubTasksFromModal());
+
+            if (!title) {
+                alert('Please enter a project title.');
+                return;
+            }
+
+            if (activeEditingRow) {
+                activeEditingRow.querySelector('.row-title').innerText = title;
+                activeEditingRow.querySelector('.row-desc').innerText = desc;
+                activeEditingRow.querySelector('.row-lead').innerText = lead;
+                activeEditingRow.querySelector('.row-nextstep').innerText = nextStep;
+                
+                const progressCell = activeEditingRow.querySelector('.row-progress');
+                progressCell.setAttribute('data-value', progressVal);
+                progressCell.innerHTML = renderStepperHTML(progressVal);
+                
+                const priorityCell = activeEditingRow.querySelector('.row-priority');
+                priorityCell.setAttribute('data-priority', priority);
+                priorityCell.innerHTML = getPriorityBadgeHTML(priority);
+
+                activeEditingRow.setAttribute('data-startdate', startDate);
+                activeEditingRow.setAttribute('data-duedate', dueDate);
+                activeEditingRow.setAttribute('data-blockers', blockers);
+                activeEditingRow.setAttribute('data-status', status);
+                activeEditingRow.setAttribute('data-effort', effort);
+                activeEditingRow.setAttribute('data-subtasks', subtasksJSON);
+
+                pushRecentUpdate(title, `Updated details (Status: ${status}, Progress: ${progressVal}%)`);
+            } else {
+                const targetTbody = getTargetTbodyByPillar(currentActivePillar);
+
+                if (targetTbody) {
+                    const tr = document.createElement('tr');
+                    tr.className = 'project-row';
+                    tr.onclick = function() { editRowModal(this); };
+                    tr.setAttribute('data-startdate', startDate);
+                    tr.setAttribute('data-duedate', dueDate);
+                    tr.setAttribute('data-blockers', blockers);
+                    tr.setAttribute('data-status', status);
+                    tr.setAttribute('data-effort', effort);
+                    tr.setAttribute('data-subtasks', subtasksJSON);
+
+                    tr.innerHTML = `
+                        <td class="text-bold row-title">${title}</td>
+                        <td class="text-desc row-desc">${desc}</td>
+                        <td class="row-lead">${lead}</td>
+                        <td class="row-nextstep">${nextStep}</td>
+                        <td class="row-progress" data-value="${progressVal}" onclick="event.stopPropagation()">${renderStepperHTML(progressVal)}</td>
+                        <td class="row-priority" data-priority="${priority}">${getPriorityBadgeHTML(priority)}</td>
+                    `;
+                    targetTbody.appendChild(tr);
+                    pushRecentUpdate(title, `New project created in ${currentActivePillar}`);
+                }
+            }
+
+            closeEditModal();
+            refreshHomeDashboard();
+        }
+
+        function deleteCurrentRow() {
+            if (activeEditingRow && confirm("Are you sure you want to delete this project?")) {
+                const title = activeEditingRow.querySelector('.row-title')?.innerText || 'Project';
+                activeEditingRow.parentNode.removeChild(activeEditingRow);
+                pushRecentUpdate(title, `Project deleted`);
+                closeEditModal();
+                refreshHomeDashboard();
+            }
+        }
+
+        // Initialize progress steppers and dashboard on load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAllProgressCells();
+            refreshHomeDashboard();
+        });
+    </script>
 </body>
 </html>
