@@ -105,9 +105,11 @@
             color: var(--flash-400);
         }
 
-        .brand-logo-svg {
+        /* Official Medallia White SVG Direct URL Styling */
+        .brand-logo-img {
             height: 22px;
             width: auto;
+            object-fit: contain;
             display: block;
         }
 
@@ -1068,17 +1070,8 @@
         <div class="brand-group">
             <button class="btn-toggle-sidebar" id="toggle-btn" onclick="toggleSidebarDrawer()" title="Open Navigation Menu">☰</button>
 
-            <!-- Inline Crisp Vector Wordmark Logo -->
-            <svg class="brand-logo-svg" viewBox="0 0 450 110" fill="#FFFFFF">
-                <path d="M 20 90 L 20 30 L 42 30 L 68 68 L 94 30 L 116 30 L 116 90 L 98 90 L 98 52 L 75 88 L 61 88 L 38 52 L 38 90 Z"/>
-                <path d="M 162 62 C 162 46 150 36 134 36 C 117 36 104 47 104 64 C 104 81 117 92 135 92 C 150 92 161 82 164 72 L 146 72 C 144 77 140 80 135 80 C 126 80 121 73 121 65 L 162 65 C 162 64 162 63 162 62 Z M 121 56 C 122 49 127 44 134 44 C 141 44 146 49 146 56 Z"/>
-                <path d="M 218 30 L 218 90 L 201 90 L 201 83 C 197 89 189 92 181 92 C 167 92 156 80 156 64 C 156 47 167 36 181 36 C 189 36 197 39 201 45 L 201 30 Z M 187 80 C 196 80 202 73 202 64 C 202 54 196 48 187 48 C 178 48 172 54 172 64 C 172 73 178 80 187 80 Z"/>
-                <path d="M 276 30 L 276 90 L 259 90 L 259 83 C 255 89 247 92 239 92 C 225 92 214 80 214 64 C 214 47 225 36 239 36 C 247 36 255 39 259 45 L 259 30 Z M 245 80 C 254 80 260 73 260 64 C 260 54 254 48 245 48 C 236 48 230 54 230 64 C 230 73 236 80 245 80 Z"/>
-                <path d="M 288 18 L 305 18 L 305 90 L 288 90 Z"/>
-                <path d="M 318 18 L 335 18 L 335 90 L 318 90 Z"/>
-                <path d="M 353 30 L 370 30 L 370 90 L 353 90 Z M 362 14 L 374 24 L 362 34 L 350 24 Z"/>
-                <path d="M 424 62 C 424 46 412 36 396 36 C 379 36 366 47 366 64 C 366 81 379 92 397 92 C 412 92 423 82 426 72 L 408 72 C 406 77 402 80 397 80 C 388 80 383 73 383 65 L 424 65 C 424 64 424 63 424 62 Z M 383 56 C 384 49 389 44 396 44 C 403 44 408 49 408 56 Z"/>
-            </svg>
+            <!-- Direct White Medallia Official SVG Logo -->
+            <img src="https://www.medallia.com/wp-content/themes/medallia2024-new/assets/static/img/medallia-white.svg" alt="Medallia" class="brand-logo-img">
 
             <span class="divider">|</span>
             <h1>Presales Projects</h1>
@@ -1566,7 +1559,7 @@
                                     <td class="text-bold row-title">Team Overview/Goals</td>
                                     <td class="text-desc row-desc">Establish Goals and Expectations of Demo Engineering Team.</td>
                                     <td class="row-lead">Kelly Redondo</td>
-                                    <td class="row-nextstep">Align team KPIs with Q3 presales targets</td>
+                                    <td class="row-nextstep">Align team KPIs with Q3 sales targets</td>
                                     <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
                                     <td class="row-priority" data-priority="Not Urgent / Important"><span class="priority-badge badge-p2">Not Urgent / Important</span></td>
                                 </tr>
@@ -1848,7 +1841,7 @@
     <script>
         let currentActivePillar = 'Home';
         let activeEditingRow = null;
-        let recentUpdatesLog = []; // Real-time activity queue
+        let recentUpdatesLog = [];
 
         function getProgressGradientStyle(pct) {
             let r, g, b = 0;
@@ -1951,11 +1944,11 @@
 
             let qStartMonth, qEndMonth, fYear = year;
             
-            if (month >= 1 && month <= 3) { qStartMonth = 1; qEndMonth = 3; }       // Q1: Feb - Apr
-            else if (month >= 4 && month <= 6) { qStartMonth = 4; qEndMonth = 6; }  // Q2: May - Jul
-            else if (month >= 7 && month <= 9) { qStartMonth = 7; qEndMonth = 9; }  // Q3: Aug - Oct
+            if (month >= 1 && month <= 3) { qStartMonth = 1; qEndMonth = 3; }
+            else if (month >= 4 && month <= 6) { qStartMonth = 4; qEndMonth = 6; }
+            else if (month >= 7 && month <= 9) { qStartMonth = 7; qEndMonth = 9; }
             else { 
-                qStartMonth = 10; qEndMonth = 0;                                   // Q4: Nov - Jan
+                qStartMonth = 10; qEndMonth = 0;
                 if (month === 0) fYear = year - 1;
             }
 
@@ -2017,7 +2010,6 @@
                     completedList.push({ title, desc, lead, dueDate });
                 } else {
                     openCount++;
-                    // STRICT REQUIREMENT: Only count overall Project Lead(s), ignore subtasks
                     const leads = lead.split(',').map(l => l.trim());
                     leads.forEach(l => {
                         if (l) ownerCounts[l] = (ownerCounts[l] || 0) + 1;
@@ -2289,7 +2281,6 @@
             progressCell.setAttribute('data-value', currentVal);
             progressCell.innerHTML = renderStepperHTML(currentVal);
             
-            // Sync status to Completed if progress becomes 100%
             if (currentVal === 100) {
                 row.setAttribute('data-status', 'Completed');
             } else if (row.getAttribute('data-status') === 'Completed') {
@@ -2326,7 +2317,6 @@
             let status = document.getElementById('modal-input-status').value;
             const effort = document.getElementById('modal-input-effort').value;
 
-            // Automation check
             if (progressVal === 100) {
                 status = 'Completed';
             }
