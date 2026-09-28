@@ -63,6 +63,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* Top Title Bar */
         .top-bar {
             height: 64px;
             background-color: var(--topbar-bg);
@@ -81,6 +82,7 @@
             gap: 16px;
         }
 
+        /* Menu Trigger Button */
         .btn-toggle-sidebar {
             background: none;
             border: 1px solid var(--slate-800);
@@ -102,10 +104,10 @@
             color: var(--flash-400);
         }
 
-        .brand-logo-img {
+        /* Inline Crisp Vector SVG Wordmark Style */
+        .brand-logo-svg {
             height: 22px;
             width: auto;
-            object-fit: contain;
             display: block;
         }
 
@@ -326,6 +328,7 @@
             background-color: var(--indigo-accent);
         }
 
+        /* Compact Welcome Banner */
         .welcome-banner-compact {
             background-color: #FFFFFF;
             border: 1px solid var(--border-color);
@@ -348,6 +351,7 @@
             color: var(--indigo-accent);
         }
 
+        /* KPI Metric Grid */
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -1052,7 +1056,13 @@
     <header class="top-bar">
         <div class="brand-group">
             <button class="btn-toggle-sidebar" id="toggle-btn" onclick="toggleSidebarDrawer()" title="Open Navigation Menu">☰</button>
-            <img src="medallia wordmark.png" alt="Medallia" class="brand-logo-img">
+            
+            <!-- Clean Inline Vector SVG Medallia Wordmark -->
+            <svg class="brand-logo-svg" viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 32V8h6.4l5.6 15.2L17.6 8H24v24h-4.8V14.8L13.4 32H10.6L4.8 14.8V32H0zm28.8 0V8h16v4.8H33.6v4.8h9.6V22.4h-9.6v4.8h11.2V32h-16.4zm20.8 0V8h8.8c5.6 0 9.6 3.6 9.6 12s-4 12-9.6 12h-8.8zm4.8-4.8h4c2.8 0 4.8-2 4.8-7.2s-2-7.2-4.8-7.2h-4v14.4zm20.8 4.8L81.6 8h5.6l6.4 24h-5.2l-1.2-4.8H80.8l-1.2 4.8h-4.8zm7.2-9.2h5.6l-2.8-11.2h-.4l-2.4 11.2zm13.6 9.2V8h4.8v19.2h9.6V32h-14.4zm17.6 0V8h4.8v19.2h9.6V32h-14.4zm17.6 0V8h4.8v24h-4.8zm12.8 0L131.2 8h5.6l6.4 24h-5.2l-1.2-4.8H130.4l-1.2 4.8h-4.8zm7.2-9.2h5.6l-2.8-11.2h-.4l-2.4 11.2z" fill="#FFFFFF"/>
+                <polygon points="142,4 146,8 142,12 138,8" fill="#C8FF00"/>
+            </svg>
+
             <span class="divider">|</span>
             <h1>Presales Projects</h1>
         </div>
@@ -1128,8 +1138,10 @@
             </div>
         </aside>
 
+        <!-- Backdrop -->
         <div class="drawer-backdrop" id="drawer-backdrop" onclick="closeSidebarDrawer()"></div>
 
+        <!-- Right Main Content Area -->
         <main class="content-area">
             <div class="content-header">
                 <h2 id="active-pillar-title">Home</h2>
