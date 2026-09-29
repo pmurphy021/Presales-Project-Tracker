@@ -8,26 +8,30 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Supabase JS Client via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
-        /* Medallia Official Brand System Tokens - Light Theme */
         :root {
-            --bg-main: #F8FAFC;        /* Frost / Soft Light Background */
-            --card-bg: #FFFFFF;        /* Elevated Card Surface */
-            --topbar-bg: #0D0F10;      /* Dark Top Bar per Medallia Brand */
+            --bg-main: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --topbar-bg: #0D0F10;
             --slate-950: #0D0F10;
             --slate-900: #1A1C1E;
             --slate-800: #32363A;
             --slate-600: #555D65;
             --slate-500: #64748B;
             --slate-400: #7F8991;
-            --slate-200: #E2E8F0;      /* Subtle Light Borders */
-            --text-primary: #0F172A;   /* Primary Typography for Light BG */
+            --slate-200: #E2E8F0;
+            --text-primary: #0F172A;
             --text-secondary: #64748B;
-            --flash-400: #C8FF00;     /* Medallia Flash Lime Accent */
+            --flash-400: #C8FF00;
             --flash-500: #AEE600;
             --border-color: #E2E8F0;
             --indigo-500: #5B5BFF;
             --indigo-accent: #2563EB;
+            --danger-red: #EF4444;
 
             /* Priority Color Tokens */
             --p1-green-bg: #ECFDF5;
@@ -83,7 +87,6 @@
             gap: 16px;
         }
 
-        /* Menu Trigger Button */
         .btn-toggle-sidebar {
             background: none;
             border: 1px solid var(--slate-800);
@@ -105,12 +108,37 @@
             color: var(--flash-400);
         }
 
-        /* Official Medallia White SVG Direct URL Styling */
-        .brand-logo-img {
-            height: 22px;
-            width: auto;
-            object-fit: contain;
-            display: block;
+        .medallia-wordmark-wrapper {
+            display: flex;
+            align-items: center;
+            user-select: none;
+        }
+
+        .brand-text-official {
+            font-size: 20px;
+            font-weight: 700;
+            color: #FFFFFF;
+            letter-spacing: -0.04em;
+            font-family: 'Inter', sans-serif;
+            line-height: 1;
+        }
+
+        .brand-text-official .dot-i {
+            position: relative;
+            display: inline-block;
+            color: #FFFFFF;
+        }
+
+        .brand-text-official .dot-i::before {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+            width: 4px;
+            height: 4px;
+            background-color: #FFFFFF;
+            border-radius: 0.5px;
         }
 
         .top-bar .divider {
@@ -125,6 +153,55 @@
             letter-spacing: -0.02em;
         }
 
+        /* Config / Status Indicators */
+        .top-right-tools {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.08);
+            color: var(--slate-400);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--slate-500);
+        }
+
+        .status-badge.connected .status-dot { background-color: var(--p1-green-text); }
+        .status-badge.connected { color: #A7F3D0; }
+
+        .status-badge.setup .status-dot { background-color: #F59E0B; }
+        .status-badge.setup { color: #FDE68A; }
+
+        .btn-config {
+            background-color: transparent;
+            color: #FFFFFF;
+            border: 1px solid var(--slate-600);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-config:hover {
+            border-color: var(--flash-400);
+            color: var(--flash-400);
+        }
+
         /* App Main Container */
         .app-container {
             display: flex;
@@ -134,7 +211,7 @@
             overflow: hidden;
         }
 
-        /* Flyout Dropdown Sidebar Drawer */
+        /* Flyout Sidebar Drawer */
         .sidebar-drawer {
             position: absolute;
             top: 0;
@@ -153,9 +230,7 @@
             box-shadow: 10px 0 30px rgba(0, 0, 0, 0.12);
         }
 
-        .sidebar-drawer.open {
-            transform: translateX(0);
-        }
+        .sidebar-drawer.open { transform: translateX(0); }
 
         .drawer-backdrop {
             position: absolute;
@@ -176,9 +251,7 @@
             opacity: 1;
         }
 
-        .sidebar-section {
-            margin-bottom: 24px;
-        }
+        .sidebar-section { margin-bottom: 24px; }
 
         .sidebar-section-label {
             color: var(--indigo-accent);
@@ -299,19 +372,14 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
-        .btn-flash:hover {
-            background-color: var(--flash-500);
-        }
+        .btn-flash:hover { background-color: var(--flash-500); }
 
         .workspace-body {
             padding: 32px 40px;
             flex: 1;
         }
 
-        /* Section Containers */
-        .dashboard-section {
-            margin-bottom: 32px;
-        }
+        .dashboard-section { margin-bottom: 32px; }
 
         .dashboard-section-title {
             font-size: 14px;
@@ -334,7 +402,6 @@
             background-color: var(--indigo-accent);
         }
 
-        /* Compact Welcome Banner */
         .welcome-banner-compact {
             background-color: #FFFFFF;
             border: 1px solid var(--border-color);
@@ -353,11 +420,8 @@
             text-overflow: ellipsis;
         }
 
-        .welcome-banner-compact p strong {
-            color: var(--indigo-accent);
-        }
+        .welcome-banner-compact p strong { color: var(--indigo-accent); }
 
-        /* KPI Metric Grid */
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -397,7 +461,6 @@
         .kpi-card.accent-quarter .kpi-value { color: #D97706; }
         .kpi-card.accent-blockers .kpi-value { color: var(--danger-red); }
 
-        /* Guidance & Prioritization Grid */
         .guidance-grid {
             display: grid;
             grid-template-columns: 1fr 2fr;
@@ -444,9 +507,7 @@
             flex-shrink: 0;
         }
 
-        .matrix-wrapper {
-            margin-top: 0;
-        }
+        .matrix-wrapper { margin-top: 0; }
 
         .eisenhower-container {
             display: grid;
@@ -517,7 +578,6 @@
         .quad-p4 { border-top: 3px solid var(--p4-red-text); background-color: var(--p4-red-bg); }
         .quad-p4 .level-subtitle { color: var(--p4-red-text); }
 
-        /* Workload Tracking Grid */
         .dashboard-lower-grid {
             display: grid;
             grid-template-columns: 1fr 2fr;
@@ -535,9 +595,7 @@
             flex-direction: column;
         }
 
-        .home-table-card.card-tall {
-            min-height: 260px;
-        }
+        .home-table-card.card-tall { min-height: 260px; }
 
         .section-card-title {
             font-size: 15px;
@@ -570,9 +628,7 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        .table-mini tr:last-child td {
-            border-bottom: none;
-        }
+        .table-mini tr:last-child td { border-bottom: none; }
 
         .badge-count {
             display: inline-block;
@@ -611,7 +667,7 @@
             font-size: 12px;
         }
 
-        /* Clickable Kanban Cards */
+        /* Kanban Cards */
         .kanban-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -704,9 +760,7 @@
             margin-bottom: 12px;
         }
 
-        .subtask-header-row label {
-            margin-bottom: 0 !important;
-        }
+        .subtask-header-row label { margin-bottom: 0 !important; }
 
         .btn-add-subtask {
             background-color: #F1F5F9;
@@ -720,9 +774,7 @@
             transition: all 0.15s ease;
         }
 
-        .btn-add-subtask:hover {
-            background-color: #E2E8F0;
-        }
+        .btn-add-subtask:hover { background-color: #E2E8F0; }
 
         .subtask-table {
             width: 100%;
@@ -761,9 +813,7 @@
             opacity: 0.7;
         }
 
-        .btn-del-subtask:hover {
-            opacity: 1;
-        }
+        .btn-del-subtask:hover { opacity: 1; }
 
         /* Category Table Styling */
         .project-table-card {
@@ -809,13 +859,9 @@
             transition: background-color 0.15s ease;
         }
 
-        tr.project-row:hover {
-            background-color: #F8FAFC;
-        }
+        tr.project-row:hover { background-color: #F8FAFC; }
 
-        tr.project-row:last-child td {
-            border-bottom: none;
-        }
+        tr.project-row:last-child td { border-bottom: none; }
 
         .text-bold {
             font-weight: 600;
@@ -833,9 +879,7 @@
             color: var(--text-secondary);
         }
 
-        .text-desc li {
-            margin-bottom: 3px;
-        }
+        .text-desc li { margin-bottom: 3px; }
 
         .priority-badge {
             display: inline-block;
@@ -888,9 +932,7 @@
             opacity: 0.7;
         }
 
-        .btn-step:hover {
-            opacity: 1;
-        }
+        .btn-step:hover { opacity: 1; }
 
         /* Modal Layout */
         .modal-overlay {
@@ -945,9 +987,7 @@
             gap: 24px;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+        .form-group { margin-bottom: 20px; }
 
         .form-group label {
             display: block;
@@ -971,9 +1011,7 @@
             line-height: 1.5;
         }
 
-        .form-group input[type="number"] {
-            -moz-appearance: textfield;
-        }
+        .form-group input[type="number"] { -moz-appearance: textfield; }
 
         .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
             outline: none;
@@ -1017,9 +1055,7 @@
             cursor: pointer;
         }
 
-        .btn-danger:hover {
-            background-color: #FEF2F2;
-        }
+        .btn-danger:hover { background-color: #FEF2F2; }
 
         .grid-2col {
             display: grid;
@@ -1061,6 +1097,27 @@
             margin-bottom: 16px;
             font-size: 24px;
         }
+
+        /* Supabase Setup Modal Specifics */
+        .supabase-instructions {
+            background-color: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .supabase-instructions code {
+            background-color: #E2E8F0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--slate-950);
+        }
     </style>
 </head>
 <body>
@@ -1070,11 +1127,21 @@
         <div class="brand-group">
             <button class="btn-toggle-sidebar" id="toggle-btn" onclick="toggleSidebarDrawer()" title="Open Navigation Menu">☰</button>
 
-            <!-- Direct White Medallia Official SVG Logo -->
-            <img src="https://www.medallia.com/wp-content/themes/medallia2024-new/assets/static/img/medallia-white.svg" alt="Medallia" class="brand-logo-img">
+            <!-- Medallia Wordmark -->
+            <div class="medallia-wordmark-wrapper">
+                <span class="brand-text-official">Medall<span class="dot-i">i</span>a</span>
+            </div>
 
             <span class="divider">|</span>
             <h1>Presales Projects</h1>
+        </div>
+
+        <div class="top-right-tools">
+            <div class="status-badge setup" id="supabase-status-badge">
+                <span class="status-dot"></span>
+                <span id="supabase-status-text">Local Fallback</span>
+            </div>
+            <button class="btn-config" onclick="openSupabaseConfigModal()">Supabase Config</button>
         </div>
     </header>
 
@@ -1384,7 +1451,7 @@
 
                 </div>
 
-                <!-- LEADERSHIP PROJECTS VIEW -->
+                <!-- CATEGORY TAB VIEWS WITH TABLE SHELLS -->
                 <div id="leadership-view" style="display: none;">
                     <div class="project-table-card">
                         <table class="data-table">
@@ -1398,37 +1465,11 @@
                                     <th style="width: 14%;">Priority</th>
                                 </tr>
                             </thead>
-                            <tbody id="leadership-table-body">
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p1" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Organizational Design</td>
-                                    <td class="text-desc row-desc">Create an Organizational Design representing the 4 Pillars of Presales (SE, DE, Value Advisory, Proposal Mgt). Include Structure, Objectives, Contacts, and Slacks.</td>
-                                    <td class="row-lead">Courtney Shealy</td>
-                                    <td class="row-nextstep">Draft initial pillar charters and review with ELT</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="Urgent / Important"><span class="priority-badge badge-p1">Urgent / Important</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p2" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Create a Charter for each Pillar</td>
-                                    <td class="text-desc row-desc">Charter describing primary objective, team organization, tools for toolkit (existing/planned), and example successes.</td>
-                                    <td class="row-lead">Courtney Shealy</td>
-                                    <td class="row-nextstep">Gather feedback from SE and Value Consulting leads</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="Not Urgent / Important"><span class="priority-badge badge-p2">Not Urgent / Important</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p3" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">KPIs</td>
-                                    <td class="text-desc row-desc">Identify Key Performance Metrics by Region</td>
-                                    <td class="row-lead">Courtney Shealy</td>
-                                    <td class="row-nextstep">Align regional metrics with Q3 sales targets</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="Not Urgent / Important"><span class="priority-badge badge-p2">Not Urgent / Important</span></td>
-                                </tr>
-                            </tbody>
+                            <tbody id="leadership-table-body"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- SOLUTIONS ENGINEERING PROJECTS VIEW -->
                 <div id="solutions-view" style="display: none;">
                     <div class="project-table-card">
                         <table class="data-table">
@@ -1442,81 +1483,11 @@
                                     <th style="width: 14%;">Priority</th>
                                 </tr>
                             </thead>
-                            <tbody id="solutions-table-body">
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p4" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">SE Charter</td>
-                                    <td class="text-desc row-desc">Definition of what we do, value we provide, how to partner with us - this is our scope and how we are measured and evaluated. See Slide.</td>
-                                    <td class="row-lead">Courtney Shealy</td>
-                                    <td class="row-nextstep">Finalize draft slide deck for sales team rollout</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="Urgent / Important"><span class="priority-badge badge-p1">Urgent / Important</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p5" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Design a SE Onboarding Plan</td>
-                                    <td class="text-desc row-desc">
-                                        Create and Finalize Field SE Onboarding Plan with regional nuances documented.
-                                        <ul>
-                                            <li><strong>Learning Plan & Project Work:</strong> Mentor/Shadow Assignments and org navigation.</li>
-                                            <li><strong>Operational Setup:</strong> Pipeline views, deal progress tracking, and PAF timeline management.</li>
-                                        </ul>
-                                    </td>
-                                    <td class="row-lead">Ashley Tomic</td>
-                                    <td class="row-nextstep">Document regional nuances for EMEA and APAC teams</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="Not Urgent / Important"><span class="priority-badge badge-p2">Not Urgent / Important</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p6" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Rules of Engagement</td>
-                                    <td class="text-desc row-desc">Update ‘How to Work’ with us Template. Includes SE support request workflow and pre-engagement criteria for AE/EM requests.</td>
-                                    <td class="row-lead">Unassigned</td>
-                                    <td class="row-nextstep">Assign project owner and outline template draft</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p7" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">FY2027 Toolkit</td>
-                                    <td class="text-desc row-desc">
-                                        Provide a brief outline and description of tools used by Solution Engineering.
-                                        <ul>
-                                            <li><strong>Growth/Expansion:</strong> Demos, Walnuts, Custom Stories, POCs, POTs, Workshops, RFPs/RFIs, Data Creation.</li>
-                                            <li><strong>Protecting the Base:</strong> V360 Client Sandboxes and Value Assessments with PostSales.</li>
-                                        </ul>
-                                    </td>
-                                    <td class="row-lead">Unassigned</td>
-                                    <td class="row-nextstep">Catalog existing Walnut demo assets</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p8" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Example Success</td>
-                                    <td class="text-desc row-desc">Customer Proof Points learned in cycles. Catalog by Vertical and Use Case for easy cross referencing and knowledge sharing.</td>
-                                    <td class="row-lead">Unassigned</td>
-                                    <td class="row-nextstep">Build repository structure in internal portal</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p9" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Innovation Workstreams</td>
-                                    <td class="text-desc row-desc">Fun, innovative projects, tips/tricks that should be shared across the team.</td>
-                                    <td class="row-lead">Unassigned</td>
-                                    <td class="row-nextstep">Schedule bi-weekly innovation showcase call</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p10" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">V360/Protect the Base</td>
-                                    <td class="text-desc row-desc">Special Projects attached to ELT tracking.</td>
-                                    <td class="row-lead">Unassigned</td>
-                                    <td class="row-nextstep">Sync with ELT sponsors on tracking cadence</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
-                                </tr>
-                            </tbody>
+                            <tbody id="solutions-table-body"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- DEMO ENGINEERING PROJECTS VIEW -->
                 <div id="demo-view" style="display: none;">
                     <div class="project-table-card">
                         <table class="data-table">
@@ -1530,45 +1501,11 @@
                                     <th style="width: 14%;">Priority</th>
                                 </tr>
                             </thead>
-                            <tbody id="demo-table-body">
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p11" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">DE Charter</td>
-                                    <td class="text-desc row-desc">Definition of what we do, value we provide, how to partner with us - this is our scope and how we are measured and evaluated. See Slide. Establish Goals and Expectations of Demo Engineering Team.</td>
-                                    <td class="row-lead">Kelly Redondo</td>
-                                    <td class="row-nextstep">Draft charter document for team review</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="Urgent / Important"><span class="priority-badge badge-p1">Urgent / Important</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p12" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Rules of Engagement</td>
-                                    <td class="text-desc row-desc">Update ‘How to Work’ with us Template.</td>
-                                    <td class="row-lead">Kelly Redondo</td>
-                                    <td class="row-nextstep">Publish updated request intake form</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="Not Urgent / Important"><span class="priority-badge badge-p2">Not Urgent / Important</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p13" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Project Gelato</td>
-                                    <td class="text-desc row-desc">Demo Rewrites and maintenance Planning.</td>
-                                    <td class="row-lead">Kelly Redondo</td>
-                                    <td class="row-nextstep">Outline sprint plan for core demo environments</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="Urgent / Important"><span class="priority-badge badge-p1">Urgent / Important</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p14" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Team Overview/Goals</td>
-                                    <td class="text-desc row-desc">Establish Goals and Expectations of Demo Engineering Team.</td>
-                                    <td class="row-lead">Kelly Redondo</td>
-                                    <td class="row-nextstep">Align team KPIs with Q3 sales targets</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="Not Urgent / Important"><span class="priority-badge badge-p2">Not Urgent / Important</span></td>
-                                </tr>
-                            </tbody>
+                            <tbody id="demo-table-body"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- RFP / PROPOSAL MANAGEMENT PROJECTS VIEW -->
                 <div id="rfp-view" style="display: none;">
                     <div class="project-table-card">
                         <table class="data-table">
@@ -1582,58 +1519,11 @@
                                     <th style="width: 14%;">Priority</th>
                                 </tr>
                             </thead>
-                            <tbody id="rfp-table-body">
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p15" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Proposals Charter</td>
-                                    <td class="text-desc row-desc">Definition of what we do, value we provide, how to partner with us - this is our scope and how we are measured and evaluated. See Slide. Establish Goals and Expectations of Proposal Team.</td>
-                                    <td class="row-lead">Unassigned</td>
-                                    <td class="row-nextstep">Draft proposal team goals and SLA framework</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p16" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Team Onboarding Plan</td>
-                                    <td class="text-desc row-desc">Create and Finalize Field Onboarding Plan.</td>
-                                    <td class="row-lead">Unassigned</td>
-                                    <td class="row-nextstep">Outline onboarding curriculum for proposal managers</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p17" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Rules of Engagement</td>
-                                    <td class="text-desc row-desc">Update ‘How to Work’ with us Template.</td>
-                                    <td class="row-lead">Unassigned</td>
-                                    <td class="row-nextstep">Define RFP submission lead-time guidelines</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p18" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">RFP Pipeline Tracking</td>
-                                    <td class="text-desc row-desc">
-                                        Automate RFP Tracking by stage/status.
-                                        <ul>
-                                            <li>Include RFP support requested, SE/AE Assigned, Qualification, deal goals, submission target date, vertical, region, and opportunity value.</li>
-                                        </ul>
-                                    </td>
-                                    <td class="row-lead">Unassigned</td>
-                                    <td class="row-nextstep">Build Salesforce tracking fields for RFP intake</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p19" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Quarterly RFP Review</td>
-                                    <td class="text-desc row-desc">Provide a Summary of RFPs requested, submitted or killed. Provide POV on common questions, program goals, teaming needs, and data sources across verticals and regions.</td>
-                                    <td class="row-lead">Unassigned</td>
-                                    <td class="row-nextstep">Aggregate Q2 RFP analytics and common question trends</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
-                                </tr>
-                            </tbody>
+                            <tbody id="rfp-table-body"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- VALUE CONSULTING PROJECTS VIEW -->
                 <div id="value-view" style="display: none;">
                     <div class="project-table-card">
                         <table class="data-table">
@@ -1647,45 +1537,11 @@
                                     <th style="width: 14%;">Priority</th>
                                 </tr>
                             </thead>
-                            <tbody id="value-table-body">
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p20" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Team Onboarding Plan</td>
-                                    <td class="text-desc row-desc">Create and Finalize Field Onboarding Plan with regional nuances documented for Value Consultants.</td>
-                                    <td class="row-lead">Unassigned</td>
-                                    <td class="row-nextstep">Draft VC specific onboarding track</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p21" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Rules of Engagement</td>
-                                    <td class="text-desc row-desc">Update ‘How to Work’ with us Template.</td>
-                                    <td class="row-lead">Unassigned</td>
-                                    <td class="row-nextstep">Define engagement criteria for Value Consulting</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p22" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Value Consulting Charter</td>
-                                    <td class="text-desc row-desc">Definition of what we do, value we provide, how to partner with us - this is our scope and how we are measured and evaluated. See Slide.</td>
-                                    <td class="row-lead">Unassigned</td>
-                                    <td class="row-nextstep">Finalize Value Consulting charter slide deck</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="None"><span class="priority-badge badge-none">Unassigned</span></td>
-                                </tr>
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p23" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Example Successes</td>
-                                    <td class="text-desc row-desc">Document Repository of assets created/delivered to clients. Provide annotations for ease of use or discovery by teammates and make all future assets discoverable for learning.</td>
-                                    <td class="row-lead">Marilyn Quaidoo</td>
-                                    <td class="row-nextstep">Setup central folder taxonomy for client deliverables</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="Not Urgent / Important"><span class="priority-badge badge-p2">Not Urgent / Important</span></td>
-                                </tr>
-                            </tbody>
+                            <tbody id="value-table-body"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- ANALYST REPORTS VIEW -->
                 <div id="analyst-view" style="display: none;">
                     <div class="project-table-card">
                         <table class="data-table">
@@ -1699,26 +1555,26 @@
                                     <th style="width: 14%;">Priority</th>
                                 </tr>
                             </thead>
-                            <tbody id="analyst-table-body">
-                                <tr class="project-row" onclick="editRowModal(this)" data-id="p24" data-startdate="" data-duedate="" data-blockers="" data-status="Not Started" data-effort="" data-subtasks='[]'>
-                                    <td class="text-bold row-title">Gartner Magic Quadrant Q3 Review</td>
-                                    <td class="text-desc row-desc">Coordinate presales technical submissions and demonstration scripts for annual Gartner Experience Management evaluation.</td>
-                                    <td class="row-lead">Unassigned</td>
-                                    <td class="row-nextstep">Gather SE product proof points</td>
-                                    <td class="row-progress" data-value="0" onclick="event.stopPropagation()"></td>
-                                    <td class="row-priority" data-priority="Urgent / Important"><span class="priority-badge badge-p1">Urgent / Important</span></td>
-                                </tr>
-                            </tbody>
+                            <tbody id="analyst-table-body"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- GENERIC CATEGORY VIEW -->
                 <div id="category-view" style="display: none; height: 100%;">
-                    <div class="empty-workspace">
-                        <div class="accent-spark">◆</div>
-                        <h3 id="category-empty-title">No projects tracked yet</h3>
-                        <p id="category-empty-desc">Click "+ Add project" above to begin populating this workspace.</p>
+                    <div class="project-table-card" id="other-table-card">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 18%;">Project</th>
+                                    <th style="width: 30%;">Description</th>
+                                    <th style="width: 14%;">Project Lead(s)</th>
+                                    <th style="width: 16%;">Next Step</th>
+                                    <th style="width: 8%;">Progress</th>
+                                    <th style="width: 14%;">Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody id="other-table-body"></tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -1727,7 +1583,7 @@
 
     </div>
 
-    <!-- Large Screen-Filling Edit Modal -->
+    <!-- Edit/Add Project Modal -->
     <div class="modal-overlay" id="edit-modal">
         <div class="modal-card-large">
             <div class="modal-header">
@@ -1754,7 +1610,7 @@
                         <textarea id="modal-input-blockers" rows="3" placeholder="List active blockers or team dependencies..."></textarea>
                     </div>
 
-                    <!-- Sub-Tasks Section (Modal View Only) -->
+                    <!-- Sub-Tasks Section -->
                     <div class="subtask-card-container">
                         <div class="subtask-header-row">
                             <label>Project Sub-Tasks</label>
@@ -1769,9 +1625,7 @@
                                     <th style="width: 5%;"></th>
                                 </tr>
                             </thead>
-                            <tbody id="subtask-table-body">
-                                <!-- Dynamic Sub-Tasks -->
-                            </tbody>
+                            <tbody id="subtask-table-body"></tbody>
                         </table>
                     </div>
                 </div>
@@ -1838,11 +1692,261 @@
         </div>
     </div>
 
+    <!-- Supabase Setup & Credentials Config Modal -->
+    <div class="modal-overlay" id="supabase-config-modal">
+        <div class="modal-card-large" style="max-width: 650px;">
+            <div class="modal-header">
+                <h3>Supabase Credentials & Sync Setup</h3>
+                <button class="btn-secondary" onclick="closeSupabaseConfigModal()">✕</button>
+            </div>
+            
+            <div class="modal-body" style="grid-template-columns: 1fr;">
+                <div class="supabase-instructions">
+                    <strong>Instructions:</strong> Enter your Supabase Project URL and Public Anon Key.
+                    <br><br>
+                    Make sure you have created the <code>projects</code> table in your Supabase SQL editor using this schema:
+                    <pre style="margin-top: 6px; font-size: 11px;">create table public.projects (
+  id text primary key,
+  pillar text,
+  title text,
+  description text,
+  lead text,
+  next_step text,
+  progress integer,
+  priority text,
+  status text,
+  start_date text,
+  due_date text,
+  blockers text,
+  effort text,
+  subtasks jsonb,
+  updated_at timestamp default now()
+);</pre>
+                </div>
+
+                <div class="form-group">
+                    <label>Supabase Project URL</label>
+                    <input type="text" id="cfg-supabase-url" placeholder="https://xyzcompany.supabase.co">
+                </div>
+
+                <div class="form-group">
+                    <label>Supabase Anon Key</label>
+                    <input type="password" id="cfg-supabase-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6...">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btn-seed-supabase" style="display: none;" onclick="seedSupabaseInitialData()">Seed Sample Data</button>
+                <div style="display: flex; gap: 12px; margin-left: auto;">
+                    <button class="btn-secondary" onclick="closeSupabaseConfigModal()">Cancel</button>
+                    <button class="btn-flash" onclick="saveSupabaseConfig()">Connect & Sync</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application JavaScript Logic -->
     <script>
         let currentActivePillar = 'Home';
-        let activeEditingRow = null;
+        let activeEditingRowId = null;
         let recentUpdatesLog = [];
+        
+        let supabaseClient = null;
+        let isSupabaseConnected = false;
 
+        // Default In-Memory Initial Seed Projects
+        const defaultProjectsSeed = [
+            // Leadership Projects
+            { id: 'p1', pillar: 'Leadership Projects', title: 'Organizational Design', description: 'Create an Organizational Design representing the 4 Pillars of Presales (SE, DE, Value Advisory, Proposal Mgt). Include Structure, Objectives, Contacts, and Slacks.', lead: 'Courtney Shealy', next_step: 'Draft initial pillar charters and review with ELT', progress: 0, priority: 'Urgent / Important', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p2', pillar: 'Leadership Projects', title: 'Create a Charter for each Pillar', description: 'Charter describing primary objective, team organization, tools for toolkit (existing/planned), and example successes.', lead: 'Courtney Shealy', next_step: 'Gather feedback from SE and Value Consulting leads', progress: 0, priority: 'Not Urgent / Important', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p3', pillar: 'Leadership Projects', title: 'KPIs', description: 'Identify Key Performance Metrics by Region', lead: 'Courtney Shealy', next_step: 'Align regional metrics with Q3 sales targets', progress: 0, priority: 'Not Urgent / Important', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+
+            // Solutions Engineering Projects
+            { id: 'p4', pillar: 'Solutions Engineering Projects', title: 'SE Charter', description: 'Definition of what we do, value we provide, how to partner with us - this is our scope and how we are measured and evaluated. See Slide.', lead: 'Courtney Shealy', next_step: 'Finalize draft slide deck for sales team rollout', progress: 0, priority: 'Urgent / Important', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p5', pillar: 'Solutions Engineering Projects', title: 'Design a SE Onboarding Plan', description: 'Create and Finalize Field SE Onboarding Plan with regional nuances documented.\n- Learning Plan & Project Work\n- Operational Setup', lead: 'Ashley Tomic', next_step: 'Document regional nuances for EMEA and APAC teams', progress: 0, priority: 'Not Urgent / Important', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p6', pillar: 'Solutions Engineering Projects', title: 'Rules of Engagement', description: 'Update ‘How to Work’ with us Template. Includes SE support request workflow and pre-engagement criteria for AE/EM requests.', lead: 'Unassigned', next_step: 'Assign project owner and outline template draft', progress: 0, priority: 'None', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p7', pillar: 'Solutions Engineering Projects', title: 'FY2027 Toolkit', description: 'Provide a brief outline and description of tools used by Solution Engineering.', lead: 'Unassigned', next_step: 'Catalog existing Walnut demo assets', progress: 0, priority: 'None', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p8', pillar: 'Solutions Engineering Projects', title: 'Example Success', description: 'Customer Proof Points learned in cycles. Catalog by Vertical and Use Case for easy cross referencing and knowledge sharing.', lead: 'Unassigned', next_step: 'Build repository structure in internal portal', progress: 0, priority: 'None', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p9', pillar: 'Solutions Engineering Projects', title: 'Innovation Workstreams', description: 'Fun, innovative projects, tips/tricks that should be shared across the team.', lead: 'Unassigned', next_step: 'Schedule bi-weekly innovation showcase call', progress: 0, priority: 'None', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p10', pillar: 'Solutions Engineering Projects', title: 'V360/Protect the Base', description: 'Special Projects attached to ELT tracking.', lead: 'Unassigned', next_step: 'Sync with ELT sponsors on tracking cadence', progress: 0, priority: 'None', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+
+            // Demo Engineering Projects
+            { id: 'p11', pillar: 'Demo Engineering Projects', title: 'DE Charter', description: 'Definition of what we do, value we provide, how to partner with us - this is our scope and how we are measured and evaluated. See Slide. Establish Goals and Expectations of Demo Engineering Team.', lead: 'Kelly Redondo', next_step: 'Draft charter document for team review', progress: 0, priority: 'Urgent / Important', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p12', pillar: 'Demo Engineering Projects', title: 'Rules of Engagement', description: 'Update ‘How to Work’ with us Template.', lead: 'Kelly Redondo', next_step: 'Publish updated request intake form', progress: 0, priority: 'Not Urgent / Important', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p13', pillar: 'Demo Engineering Projects', title: 'Project Gelato', description: 'Demo Rewrites and maintenance Planning.', lead: 'Kelly Redondo', next_step: 'Outline sprint plan for core demo environments', progress: 0, priority: 'Urgent / Important', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p14', pillar: 'Demo Engineering Projects', title: 'Team Overview/Goals', description: 'Establish Goals and Expectations of Demo Engineering Team.', lead: 'Kelly Redondo', next_step: 'Align team KPIs with Q3 presales targets', progress: 0, priority: 'Not Urgent / Important', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+
+            // RFP / Proposal Management Projects
+            { id: 'p15', pillar: 'RFP / Proposal Management Projects', title: 'Proposals Charter', description: 'Definition of what we do, value we provide, how to partner with us - this is our scope and how we are measured and evaluated. See Slide. Establish Goals and Expectations of Proposal Team.', lead: 'Unassigned', next_step: 'Draft proposal team goals and SLA framework', progress: 0, priority: 'None', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p16', pillar: 'RFP / Proposal Management Projects', title: 'Team Onboarding Plan', description: 'Create and Finalize Field Onboarding Plan.', lead: 'Unassigned', next_step: 'Outline onboarding curriculum for proposal managers', progress: 0, priority: 'None', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p17', pillar: 'RFP / Proposal Management Projects', title: 'Rules of Engagement', description: 'Update ‘How to Work’ with us Template.', lead: 'Unassigned', next_step: 'Define RFP submission lead-time guidelines', progress: 0, priority: 'None', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p18', pillar: 'RFP / Proposal Management Projects', title: 'RFP Pipeline Tracking', description: 'Automate RFP Tracking by stage/status.', lead: 'Unassigned', next_step: 'Build Salesforce tracking fields for RFP intake', progress: 0, priority: 'None', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p19', pillar: 'RFP / Proposal Management Projects', title: 'Quarterly RFP Review', description: 'Provide a Summary of RFPs requested, submitted or killed.', lead: 'Unassigned', next_step: 'Aggregate Q2 RFP analytics and common question trends', progress: 0, priority: 'None', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+
+            // Value Consulting Projects
+            { id: 'p20', pillar: 'Value Consulting Projects', title: 'Team Onboarding Plan', description: 'Create and Finalize Field Onboarding Plan with regional nuances documented for Value Consultants.', lead: 'Unassigned', next_step: 'Draft VC specific onboarding track', progress: 0, priority: 'None', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p21', pillar: 'Value Consulting Projects', title: 'Rules of Engagement', description: 'Update ‘How to Work’ with us Template.', lead: 'Unassigned', next_step: 'Define engagement criteria for Value Consulting', progress: 0, priority: 'None', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p22', pillar: 'Value Consulting Projects', title: 'Value Consulting Charter', description: 'Definition of what we do, value we provide, how to partner with us - this is our scope and how we are measured and evaluated. See Slide.', lead: 'Unassigned', next_step: 'Finalize Value Consulting charter slide deck', progress: 0, priority: 'None', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+            { id: 'p23', pillar: 'Value Consulting Projects', title: 'Example Successes', description: 'Document Repository of assets created/delivered to clients.', lead: 'Marilyn Quaidoo', next_step: 'Setup central folder taxonomy for client deliverables', progress: 0, priority: 'Not Urgent / Important', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] },
+
+            // Analyst Reports
+            { id: 'p24', pillar: 'Analyst Reports', title: 'Gartner Magic Quadrant Q3 Review', description: 'Coordinate presales technical submissions and demonstration scripts for annual Gartner Experience Management evaluation.', lead: 'Unassigned', next_step: 'Gather SE product proof points', progress: 0, priority: 'Urgent / Important', status: 'Not Started', start_date: '', due_date: '', blockers: '', effort: '', subtasks: [] }
+        ];
+
+        let projectsData = [...defaultProjectsSeed];
+
+        // --- Supabase Setup & Real-Time Sync Handlers ---
+        function initSupabaseFromStorage() {
+            const url = localStorage.getItem('medallia_sp_url');
+            const key = localStorage.getItem('medallia_sp_key');
+
+            if (url && key && window.supabase) {
+                try {
+                    supabaseClient = window.supabase.createClient(url, key);
+                    testSupabaseConnection();
+                } catch(e) {
+                    console.error("Supabase Client Error:", e);
+                    setSupabaseStatus(false, "Connection Failed");
+                }
+            } else {
+                setSupabaseStatus(false, "Local Fallback");
+            }
+        }
+
+        async function testSupabaseConnection() {
+            if (!supabaseClient) return;
+            try {
+                const { data, error } = await supabaseClient.from('projects').select('*');
+                if (error) throw error;
+
+                isSupabaseConnected = true;
+                setSupabaseStatus(true, "Supabase Live");
+                
+                if (data && data.length > 0) {
+                    projectsData = data.map(p => ({
+                        ...p,
+                        subtasks: typeof p.subtasks === 'string' ? JSON.parse(p.subtasks || '[]') : (p.subtasks || [])
+                    }));
+                }
+                
+                renderAllTables();
+                refreshHomeDashboard();
+                subscribeToSupabaseRealtime();
+
+                document.getElementById('btn-seed-supabase').style.display = 'block';
+            } catch(e) {
+                console.error("Supabase Test Fetch Failed:", e);
+                isSupabaseConnected = false;
+                setSupabaseStatus(false, "Setup Required");
+            }
+        }
+
+        function subscribeToSupabaseRealtime() {
+            if (!supabaseClient) return;
+            
+            supabaseClient
+                .channel('public:projects')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'projects' }, payload => {
+                    handleRealtimePayload(payload);
+                })
+                .subscribe();
+        }
+
+        function handleRealtimePayload(payload) {
+            const { eventType, new: newRecord, old: oldRecord } = payload;
+
+            if (eventType === 'INSERT' || eventType === 'UPDATE') {
+                const formattedRecord = {
+                    ...newRecord,
+                    subtasks: typeof newRecord.subtasks === 'string' ? JSON.parse(newRecord.subtasks || '[]') : (newRecord.subtasks || [])
+                };
+
+                const index = projectsData.findIndex(p => p.id === formattedRecord.id);
+                if (index >= 0) {
+                    projectsData[index] = formattedRecord;
+                } else {
+                    projectsData.push(formattedRecord);
+                }
+                pushRecentUpdate(formattedRecord.title, `Live update synced`);
+            } else if (eventType === 'DELETE') {
+                projectsData = projectsData.filter(p => p.id !== oldRecord.id);
+            }
+
+            renderAllTables();
+            refreshHomeDashboard();
+        }
+
+        function setSupabaseStatus(connected, label) {
+            const badge = document.getElementById('supabase-status-badge');
+            const text = document.getElementById('supabase-status-text');
+            badge.className = 'status-badge ' + (connected ? 'connected' : 'setup');
+            text.innerText = label;
+        }
+
+        function openSupabaseConfigModal() {
+            document.getElementById('cfg-supabase-url').value = localStorage.getItem('medallia_sp_url') || '';
+            document.getElementById('cfg-supabase-key').value = localStorage.getItem('medallia_sp_key') || '';
+            document.getElementById('supabase-config-modal').style.display = 'flex';
+        }
+
+        function closeSupabaseConfigModal() {
+            document.getElementById('supabase-config-modal').style.display = 'none';
+        }
+
+        async function saveSupabaseConfig() {
+            const url = document.getElementById('cfg-supabase-url').value.trim();
+            const key = document.getElementById('cfg-supabase-key').value.trim();
+
+            if (!url || !key) {
+                alert("Please enter both Supabase URL and Key.");
+                return;
+            }
+
+            localStorage.setItem('medallia_sp_url', url);
+            localStorage.setItem('medallia_sp_key', key);
+
+            closeSupabaseConfigModal();
+            initSupabaseFromStorage();
+        }
+
+        async function seedSupabaseInitialData() {
+            if (!supabaseClient || !isSupabaseConnected) return;
+            if (confirm("Are you sure you want to seed default projects into your Supabase database?")) {
+                const { error } = await supabaseClient.from('projects').upsert(defaultProjectsSeed.map(p => ({
+                    ...p,
+                    subtasks: JSON.stringify(p.subtasks)
+                })));
+
+                if (error) {
+                    alert("Error seeding data: " + error.message);
+                } else {
+                    alert("Default projects successfully seeded into Supabase!");
+                    testSupabaseConnection();
+                }
+            }
+        }
+
+        // --- Database & Local CRUD Abstraction Layer ---
+        async function syncSaveProject(projectObj) {
+            if (isSupabaseConnected && supabaseClient) {
+                const payload = {
+                    ...projectObj,
+                    subtasks: JSON.stringify(projectObj.subtasks || []),
+                    updated_at: new Date().toISOString()
+                };
+                const { error } = await supabaseClient.from('projects').upsert(payload);
+                if (error) console.error("Supabase Save Error:", error);
+            }
+        }
+
+        async function syncDeleteProject(id) {
+            if (isSupabaseConnected && supabaseClient) {
+                const { error } = await supabaseClient.from('projects').delete().eq('id', id);
+                if (error) console.error("Supabase Delete Error:", error);
+            }
+        }
+
+        // --- Table & UI Render Functions ---
         function getProgressGradientStyle(pct) {
             let r, g, b = 0;
             if (pct < 50) {
@@ -1875,10 +1979,56 @@
             `;
         }
 
-        function updateAllProgressCells() {
-            document.querySelectorAll('.row-progress').forEach(cell => {
-                const val = parseInt(cell.getAttribute('data-value')) || 0;
-                cell.innerHTML = renderStepperHTML(val);
+        function getPriorityBadgeHTML(priority) {
+            let badgeClass = 'badge-p1';
+            if (priority === 'Not Urgent / Important') badgeClass = 'badge-p2';
+            if (priority === 'Urgent / Not Important') badgeClass = 'badge-p3';
+            if (priority === 'Not Important / Not Urgent') badgeClass = 'badge-p4';
+            if (priority === 'None' || !priority) return `<span class="priority-badge badge-none">Unassigned</span>`;
+
+            return `<span class="priority-badge ${badgeClass}">${priority}</span>`;
+        }
+
+        function getTargetTbodyByPillar(pillar) {
+            if (pillar === 'Leadership Projects') return document.getElementById('leadership-table-body');
+            if (pillar === 'Solutions Engineering Projects') return document.getElementById('solutions-table-body');
+            if (pillar === 'Demo Engineering Projects') return document.getElementById('demo-table-body');
+            if (pillar === 'RFP / Proposal Management Projects') return document.getElementById('rfp-table-body');
+            if (pillar === 'Value Consulting Projects') return document.getElementById('value-table-body');
+            if (pillar === 'Analyst Reports') return document.getElementById('analyst-table-body');
+            if (pillar === 'Other Projects') return document.getElementById('other-table-body');
+            return null;
+        }
+
+        function renderAllTables() {
+            const tableBodies = [
+                'leadership-table-body', 'solutions-table-body', 'demo-table-body',
+                'rfp-table-body', 'value-table-body', 'analyst-table-body', 'other-table-body'
+            ];
+
+            tableBodies.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = '';
+            });
+
+            projectsData.forEach(p => {
+                const tbody = getTargetTbodyByPillar(p.pillar);
+                if (tbody) {
+                    const tr = document.createElement('tr');
+                    tr.className = 'project-row';
+                    tr.setAttribute('data-id', p.id);
+                    tr.onclick = function() { editRowModal(p.id); };
+                    
+                    tr.innerHTML = `
+                        <td class="text-bold row-title">${p.title}</td>
+                        <td class="text-desc row-desc">${p.description}</td>
+                        <td class="row-lead">${p.lead || 'Unassigned'}</td>
+                        <td class="row-nextstep">${p.next_step || ''}</td>
+                        <td class="row-progress" data-value="${p.progress}" onclick="event.stopPropagation()">${renderStepperHTML(p.progress)}</td>
+                        <td class="row-priority" data-priority="${p.priority}">${getPriorityBadgeHTML(p.priority)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
             });
         }
 
@@ -1926,9 +2076,7 @@
                 const title = r.querySelector('.subtask-title-input')?.value.trim();
                 const owner = r.querySelector('.subtask-owner-input')?.value.trim();
                 const done = r.querySelector('.subtask-chk')?.checked || false;
-                if (title) {
-                    subtasks.push({ title, owner, done });
-                }
+                if (title) subtasks.push({ title, owner, done });
             });
             return subtasks;
         }
@@ -1943,7 +2091,6 @@
             const month = now.getMonth();
 
             let qStartMonth, qEndMonth, fYear = year;
-            
             if (month >= 1 && month <= 3) { qStartMonth = 1; qEndMonth = 3; }
             else if (month >= 4 && month <= 6) { qStartMonth = 4; qEndMonth = 6; }
             else if (month >= 7 && month <= 9) { qStartMonth = 7; qEndMonth = 9; }
@@ -1972,8 +2119,6 @@
         }
 
         function refreshHomeDashboard() {
-            const allRows = document.querySelectorAll('tr.project-row');
-            
             let openCount = 0;
             let completedCount = 0;
             let quarterCount = 0;
@@ -1991,18 +2136,18 @@
                 'Blocked': []
             };
 
-            allRows.forEach(row => {
-                const title = row.querySelector('.row-title')?.innerText || 'Untitled';
-                const desc = row.querySelector('.row-desc')?.innerText || '';
-                const status = row.getAttribute('data-status') || 'Not Started';
-                const lead = row.querySelector('.row-lead')?.innerText || 'Unassigned';
-                const dueDate = row.getAttribute('data-duedate') || '';
-                const blockers = row.getAttribute('data-blockers')?.trim() || '';
+            projectsData.forEach(p => {
+                const title = p.title || 'Untitled';
+                const desc = p.description || '';
+                const status = p.status || 'Not Started';
+                const lead = p.lead || 'Unassigned';
+                const dueDate = p.due_date || '';
+                const blockers = (p.blockers || '').trim();
 
                 if (kanbanBuckets[status]) {
-                    kanbanBuckets[status].push({ title, element: row });
+                    kanbanBuckets[status].push(p);
                 } else {
-                    kanbanBuckets['Not Started'].push({ title, element: row });
+                    kanbanBuckets['Not Started'].push(p);
                 }
 
                 if (status === 'Completed') {
@@ -2010,6 +2155,7 @@
                     completedList.push({ title, desc, lead, dueDate });
                 } else {
                     openCount++;
+                    // STRICT RULE: Only count main Project Lead(s), ignore sub-task owners
                     const leads = lead.split(',').map(l => l.trim());
                     leads.forEach(l => {
                         if (l) ownerCounts[l] = (ownerCounts[l] || 0) + 1;
@@ -2031,7 +2177,7 @@
             document.getElementById('kpi-quarter-count').innerText = quarterCount;
             document.getElementById('kpi-blockers-count').innerText = blockersCount;
 
-            // Render Owner Tracker Table
+            // Owner Tracker Table
             const ownerTbody = document.getElementById('owner-tracker-tbody');
             ownerTbody.innerHTML = '';
             
@@ -2049,7 +2195,7 @@
                 });
             }
 
-            // Render Active Blockers Table
+            // Blockers Table
             const blockerTbody = document.getElementById('blocker-tracker-tbody');
             blockerTbody.innerHTML = '';
 
@@ -2067,7 +2213,7 @@
                 });
             }
 
-            // Render Completed Projects Table
+            // Completed Projects Table
             const completedTbody = document.getElementById('completed-tracker-tbody');
             completedTbody.innerHTML = '';
 
@@ -2086,7 +2232,7 @@
                 });
             }
 
-            // Render Most Recently Updated Projects
+            // Most Recently Updated Projects Log
             const updatesTbody = document.getElementById('recent-updates-tbody');
             updatesTbody.innerHTML = '';
 
@@ -2103,7 +2249,7 @@
                 });
             }
 
-            // Render Clickable Kanban Cards
+            // Kanban Columns
             const kanbanKeys = [
                 { key: 'Not Started', id: 'kanban-not-started', countId: 'count-not-started' },
                 { key: 'In Progress', id: 'kanban-in-progress', countId: 'count-in-progress' },
@@ -2123,13 +2269,11 @@
                 if (items.length === 0) {
                     container.innerHTML = `<div style="font-size: 11px; color: var(--text-secondary); text-align: center; margin-top: 12px; font-style: italic;">No items</div>`;
                 } else {
-                    items.forEach(item => {
+                    items.forEach(p => {
                         const card = document.createElement('div');
                         card.className = 'kanban-card';
-                        card.innerText = item.title;
-                        card.onclick = function() {
-                            editRowModal(item.element);
-                        };
+                        card.innerText = p.title;
+                        card.onclick = function() { editRowModal(p.id); };
                         container.appendChild(card);
                     });
                 }
@@ -2202,41 +2346,36 @@
             closeSidebarDrawer();
         }
 
-        function editRowModal(trElement) {
-            activeEditingRow = trElement;
+        function editRowModal(projectId) {
+            const p = projectsData.find(item => item.id === projectId);
+            if (!p) return;
+
+            activeEditingRowId = projectId;
             document.getElementById('modal-title-text').textContent = 'Edit Project Details';
             document.getElementById('btn-delete-modal').style.display = 'block';
 
-            document.getElementById('modal-input-title').value = trElement.querySelector('.row-title').innerText;
-            document.getElementById('modal-input-desc').value = trElement.querySelector('.row-desc').innerText;
-            document.getElementById('modal-input-lead').value = trElement.querySelector('.row-lead').innerText;
-            document.getElementById('modal-input-nextstep').value = trElement.querySelector('.row-nextstep').innerText;
-            
-            const rawVal = parseInt(trElement.querySelector('.row-progress').getAttribute('data-value')) || 0;
-            document.getElementById('modal-input-progress').value = rawVal;
-            
-            const savedPriority = trElement.querySelector('.row-priority').getAttribute('data-priority') || 'None';
-            document.getElementById('modal-input-priority').value = savedPriority;
+            document.getElementById('modal-input-title').value = p.title || '';
+            document.getElementById('modal-input-desc').value = p.description || '';
+            document.getElementById('modal-input-lead').value = p.lead || '';
+            document.getElementById('modal-input-nextstep').value = p.next_step || '';
+            document.getElementById('modal-input-progress').value = p.progress || 0;
+            document.getElementById('modal-input-priority').value = p.priority || 'None';
+            document.getElementById('modal-input-startdate').value = p.start_date || '';
+            document.getElementById('modal-input-duedate').value = p.due_date || '';
+            document.getElementById('modal-input-blockers').value = p.blockers || '';
+            document.getElementById('modal-input-status').value = p.status || 'Not Started';
+            document.getElementById('modal-input-effort').value = p.effort || '';
 
-            document.getElementById('modal-input-startdate').value = trElement.getAttribute('data-startdate') || '';
-            document.getElementById('modal-input-duedate').value = trElement.getAttribute('data-duedate') || '';
-            document.getElementById('modal-input-blockers').value = trElement.getAttribute('data-blockers') || '';
-            document.getElementById('modal-input-status').value = trElement.getAttribute('data-status') || 'Not Started';
-            document.getElementById('modal-input-effort').value = trElement.getAttribute('data-effort') || '';
-
-            // Populate Sub-Tasks in Modal
+            // Sub-tasks
             const subtaskTbody = document.getElementById('subtask-table-body');
             subtaskTbody.innerHTML = '';
-            try {
-                const subtasks = JSON.parse(trElement.getAttribute('data-subtasks') || '[]');
-                subtasks.forEach(st => addSubTaskRow(st.title, st.owner, st.done));
-            } catch(e) {}
+            (p.subtasks || []).forEach(st => addSubTaskRow(st.title, st.owner, st.done));
 
             document.getElementById('edit-modal').style.display = 'flex';
         }
 
         function openNewProjectModal() {
-            activeEditingRow = null;
+            activeEditingRowId = null;
             document.getElementById('modal-title-text').textContent = `Add Project to ${currentActivePillar}`;
             document.getElementById('btn-delete-modal').style.display = 'none';
 
@@ -2253,7 +2392,6 @@
             document.getElementById('modal-input-effort').value = '';
 
             document.getElementById('subtask-table-body').innerHTML = '';
-
             document.getElementById('edit-modal').style.display = 'flex';
         }
 
@@ -2261,51 +2399,31 @@
             document.getElementById('edit-modal').style.display = 'none';
         }
 
-        function getPriorityBadgeHTML(priority) {
-            let badgeClass = 'badge-p1';
-            if (priority === 'Not Urgent / Important') badgeClass = 'badge-p2';
-            if (priority === 'Urgent / Not Important') badgeClass = 'badge-p3';
-            if (priority === 'Not Important / Not Urgent') badgeClass = 'badge-p4';
-            if (priority === 'None' || !priority) return `<span class="priority-badge badge-none">Unassigned</span>`;
-
-            return `<span class="priority-badge ${badgeClass}">${priority}</span>`;
-        }
-
         function changeRowProgress(btnElement, delta) {
-            const progressCell = btnElement.closest('.row-progress');
             const row = btnElement.closest('tr.project-row');
-            const title = row.querySelector('.row-title')?.innerText || 'Project';
-
-            let currentVal = parseInt(progressCell.getAttribute('data-value')) || 0;
-            currentVal = Math.max(0, Math.min(100, currentVal + delta));
-            progressCell.setAttribute('data-value', currentVal);
-            progressCell.innerHTML = renderStepperHTML(currentVal);
+            const projectId = row.getAttribute('data-id');
+            const p = projectsData.find(item => item.id === projectId);
             
-            if (currentVal === 100) {
-                row.setAttribute('data-status', 'Completed');
-            } else if (row.getAttribute('data-status') === 'Completed') {
-                row.setAttribute('data-status', 'In Progress');
+            if (p) {
+                let currentVal = p.progress || 0;
+                currentVal = Math.max(0, Math.min(100, currentVal + delta));
+                p.progress = currentVal;
+
+                if (currentVal === 100) p.status = 'Completed';
+                else if (p.status === 'Completed') p.status = 'In Progress';
+
+                pushRecentUpdate(p.title, `Progress updated to ${currentVal}%`);
+                syncSaveProject(p);
+                renderAllTables();
+                refreshHomeDashboard();
             }
-
-            pushRecentUpdate(title, `Progress updated to ${currentVal}%`);
-            refreshHomeDashboard();
         }
 
-        function getTargetTbodyByPillar(pillar) {
-            if (pillar === 'Leadership Projects') return document.getElementById('leadership-table-body');
-            if (pillar === 'Solutions Engineering Projects') return document.getElementById('solutions-table-body');
-            if (pillar === 'Demo Engineering Projects') return document.getElementById('demo-table-body');
-            if (pillar === 'RFP / Proposal Management Projects') return document.getElementById('rfp-table-body');
-            if (pillar === 'Value Consulting Projects') return document.getElementById('value-table-body');
-            if (pillar === 'Analyst Reports') return document.getElementById('analyst-table-body');
-            return null;
-        }
-
-        function saveModalChanges() {
-            const title = document.getElementById('modal-input-title').value;
-            const desc = document.getElementById('modal-input-desc').value;
-            const lead = document.getElementById('modal-input-lead').value || 'Unassigned';
-            const nextStep = document.getElementById('modal-input-nextstep').value;
+        async function saveModalChanges() {
+            const title = document.getElementById('modal-input-title').value.trim();
+            const desc = document.getElementById('modal-input-desc').value.trim();
+            const lead = document.getElementById('modal-input-lead').value.trim() || 'Unassigned';
+            const nextStep = document.getElementById('modal-input-nextstep').value.trim();
             
             let progressVal = parseInt(document.getElementById('modal-input-progress').value) || 0;
             progressVal = Math.max(0, Math.min(100, progressVal));
@@ -2313,88 +2431,84 @@
             const priority = document.getElementById('modal-input-priority').value;
             const startDate = document.getElementById('modal-input-startdate').value;
             const dueDate = document.getElementById('modal-input-duedate').value;
-            const blockers = document.getElementById('modal-input-blockers').value;
+            const blockers = document.getElementById('modal-input-blockers').value.trim();
             let status = document.getElementById('modal-input-status').value;
-            const effort = document.getElementById('modal-input-effort').value;
+            const effort = document.getElementById('modal-input-effort').value.trim();
 
-            if (progressVal === 100) {
-                status = 'Completed';
-            }
-
-            const subtasksJSON = JSON.stringify(getSubTasksFromModal());
+            if (progressVal === 100) status = 'Completed';
+            const subtasksArr = getSubTasksFromModal();
 
             if (!title) {
                 alert('Please enter a project title.');
                 return;
             }
 
-            if (activeEditingRow) {
-                activeEditingRow.querySelector('.row-title').innerText = title;
-                activeEditingRow.querySelector('.row-desc').innerText = desc;
-                activeEditingRow.querySelector('.row-lead').innerText = lead;
-                activeEditingRow.querySelector('.row-nextstep').innerText = nextStep;
-                
-                const progressCell = activeEditingRow.querySelector('.row-progress');
-                progressCell.setAttribute('data-value', progressVal);
-                progressCell.innerHTML = renderStepperHTML(progressVal);
-                
-                const priorityCell = activeEditingRow.querySelector('.row-priority');
-                priorityCell.setAttribute('data-priority', priority);
-                priorityCell.innerHTML = getPriorityBadgeHTML(priority);
+            if (activeEditingRowId) {
+                const p = projectsData.find(item => item.id === activeEditingRowId);
+                if (p) {
+                    p.title = title;
+                    p.description = desc;
+                    p.lead = lead;
+                    p.next_step = nextStep;
+                    p.progress = progressVal;
+                    p.priority = priority;
+                    p.start_date = startDate;
+                    p.due_date = dueDate;
+                    p.blockers = blockers;
+                    p.status = status;
+                    p.effort = effort;
+                    p.subtasks = subtasksArr;
 
-                activeEditingRow.setAttribute('data-startdate', startDate);
-                activeEditingRow.setAttribute('data-duedate', dueDate);
-                activeEditingRow.setAttribute('data-blockers', blockers);
-                activeEditingRow.setAttribute('data-status', status);
-                activeEditingRow.setAttribute('data-effort', effort);
-                activeEditingRow.setAttribute('data-subtasks', subtasksJSON);
-
-                pushRecentUpdate(title, `Updated details (Status: ${status}, Progress: ${progressVal}%)`);
-            } else {
-                const targetTbody = getTargetTbodyByPillar(currentActivePillar);
-
-                if (targetTbody) {
-                    const tr = document.createElement('tr');
-                    tr.className = 'project-row';
-                    tr.onclick = function() { editRowModal(this); };
-                    tr.setAttribute('data-startdate', startDate);
-                    tr.setAttribute('data-duedate', dueDate);
-                    tr.setAttribute('data-blockers', blockers);
-                    tr.setAttribute('data-status', status);
-                    tr.setAttribute('data-effort', effort);
-                    tr.setAttribute('data-subtasks', subtasksJSON);
-
-                    tr.innerHTML = `
-                        <td class="text-bold row-title">${title}</td>
-                        <td class="text-desc row-desc">${desc}</td>
-                        <td class="row-lead">${lead}</td>
-                        <td class="row-nextstep">${nextStep}</td>
-                        <td class="row-progress" data-value="${progressVal}" onclick="event.stopPropagation()">${renderStepperHTML(progressVal)}</td>
-                        <td class="row-priority" data-priority="${priority}">${getPriorityBadgeHTML(priority)}</td>
-                    `;
-                    targetTbody.appendChild(tr);
-                    pushRecentUpdate(title, `New project created in ${currentActivePillar}`);
+                    pushRecentUpdate(title, `Updated details (Status: ${status}, Progress: ${progressVal}%)`);
+                    syncSaveProject(p);
                 }
+            } else {
+                const newProject = {
+                    id: 'p_' + Date.now(),
+                    pillar: currentActivePillar,
+                    title,
+                    description: desc,
+                    lead,
+                    next_step: nextStep,
+                    progress: progressVal,
+                    priority,
+                    status,
+                    start_date: startDate,
+                    due_date: dueDate,
+                    blockers,
+                    effort,
+                    subtasks: subtasksArr
+                };
+                projectsData.push(newProject);
+                pushRecentUpdate(title, `New project created in ${currentActivePillar}`);
+                syncSaveProject(newProject);
             }
 
             closeEditModal();
+            renderAllTables();
             refreshHomeDashboard();
         }
 
-        function deleteCurrentRow() {
-            if (activeEditingRow && confirm("Are you sure you want to delete this project?")) {
-                const title = activeEditingRow.querySelector('.row-title')?.innerText || 'Project';
-                activeEditingRow.parentNode.removeChild(activeEditingRow);
+        async function deleteCurrentRow() {
+            if (activeEditingRowId && confirm("Are you sure you want to delete this project?")) {
+                const p = projectsData.find(item => item.id === activeEditingRowId);
+                const title = p ? p.title : 'Project';
+                
+                projectsData = projectsData.filter(item => item.id !== activeEditingRowId);
                 pushRecentUpdate(title, `Project deleted`);
+                
+                syncDeleteProject(activeEditingRowId);
                 closeEditModal();
+                renderAllTables();
                 refreshHomeDashboard();
             }
         }
 
-        // Initialize progress steppers and dashboard on load
+        // App Initialization
         document.addEventListener('DOMContentLoaded', () => {
-            updateAllProgressCells();
+            renderAllTables();
             refreshHomeDashboard();
+            initSupabaseFromStorage();
         });
     </script>
 </body>
